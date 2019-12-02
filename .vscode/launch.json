@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach",
+            "port": 9229,
+            "address": "localhost",
+            "restart": false,
+            "sourceMaps": false,
+            "localRoot": "${workspaceRoot}",
+            "remoteRoot": null
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "name": "Launch Program",
+            "stopOnEntry": false,
+            "args": [],
+            "runtimeExecutable": "node",
+            "runtimeArgs": ["--nolazy"],
+            "console": "integratedTerminal",
+            "program": "${workspaceFolder}\\dist\\src\\app.js",
+            "outFiles": ["${workspaceFolder}\\**\\*.js"],
+            "cwd": "${workspaceFolder}",
+            "sourceMaps": true
+        }
+    ]
+}
