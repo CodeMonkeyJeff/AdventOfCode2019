@@ -7,28 +7,23 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attach",
-            "port": 9229,
-            "address": "localhost",
-            "restart": false,
-            "sourceMaps": false,
-            "localRoot": "${workspaceRoot}",
-            "remoteRoot": null
+            "name": "Attach to Process",
+            "port": 9229
         },
         {
             "type": "node",
             "request": "launch",
             "preLaunchTask": "build",
+            "protocol": "auto",
             "name": "Launch Program",
-            "stopOnEntry": false,
-            "args": [],
-            "runtimeExecutable": "node",
-            "runtimeArgs": ["--nolazy"],
             "console": "integratedTerminal",
-            "program": "${workspaceFolder}\\dist\\src\\app.js",
-            "outFiles": ["${workspaceFolder}\\**\\*.js"],
-            "cwd": "${workspaceFolder}",
-            "sourceMaps": true
+            "runtimeExecutable": "node",
+            "program": "${workspaceFolder}/src/app.ts",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "sourceMaps": true,
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

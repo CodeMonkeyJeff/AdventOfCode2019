@@ -24,6 +24,6 @@ export class TyrannyOfRocketEquation {
         return fuel;
     }
 
-    public static Day1(): string { return this._input.map((val: number): number => this.GetFuel(val)).reduce((total: number, val: number) => total + val).toString(); }
-    public static Day2(): string { return this._input.map((val: number) => this.GetRecursiveFuel(val)).reduce((total: number, val: number) => total + val).toString(); }
+    public static Day1Part1(): string { return this._input.map((val: number): number => this.GetFuel(val)).reduce((total: number, val: number) => total + val).toString(); }
+    public static Day1Part2(): string { return this._input.map((val: number) => this.GetRecursiveFuel(val)).reduce((total: number, val: number) => total + val).toString(); }
 }
