@@ -4,6 +4,7 @@ import { TyrannyOfRocketEquation } from "./TyrannyOfRocketEquation";
 import { ProgramAlarm1202 } from "./ProgramAlarm1202";
 import { CrossedWires } from "./CrossedWires";
 import { performance } from "perf_hooks";
+import { SecureContainer } from "./SecureContainer";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -20,5 +21,8 @@ console.log("Day  1 Part 2" + tF(TyrannyOfRocketEquation.Day1Part2));
 console.log("Day  2 Part 1" + tF(ProgramAlarm1202.Day2Part1));
 console.log("Day  2 Part 2" + tF(ProgramAlarm1202.Day2Part2));
 console.log("Day  3 Part 1" + tF(CrossedWires.Day3Part1));
+console.log("Day  3 Part 2" + tF(CrossedWires.Day3Part2));
+console.log("Day  4 Part 1" + tF(SecureContainer.Day4Part1));
+console.log("Day  4 Part 2" + tF(SecureContainer.Day4Part2));
 
 console.log();
