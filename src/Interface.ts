@@ -8,7 +8,7 @@ export interface GridDimension {
     Right: number;
 }
 
-export interface GridPosition {
+export interface Point {
     x: number;
     y: number;
 }

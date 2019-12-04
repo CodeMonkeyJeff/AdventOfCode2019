@@ -3,24 +3,22 @@
 import { TyrannyOfRocketEquation } from "./TyrannyOfRocketEquation";
 import { ProgramAlarm1202 } from "./ProgramAlarm1202";
 import { CrossedWires } from "./CrossedWires";
+import { performance } from "perf_hooks";
 
+const tF = (callbackFn: () => string): string => {
+    const t0 = performance.now();
+    const result = callbackFn();
+    const t1 = performance.now();
+    return result.padStart(25) + (t1 - t0).toFixed(3).toString().padStart(25) + " milliseconds";
+}
 console.log();
 
 console.log("Advent of Code 2019");
 console.log("-------------------");
-console.log("Day  1 Part 1" + TyrannyOfRocketEquation.Day1Part1().padStart(25));
-console.log("Day  1 Part 2" + TyrannyOfRocketEquation.Day1Part2().padStart(25));
-console.log("Day  2 Part 1" + ProgramAlarm1202.Day2Part1().padStart(25));
-console.log("Day  2 Part 2" + ProgramAlarm1202.Day2Part2().padStart(25));
-
-// Temp stuff
-console.log();
-const wirepath1 = [ "R8, U5", "L5", "D3" ];
-const wirepath2 = [ "U7, R6", "D4", "L4" ];
-const o = new CrossedWires(wirepath1, wirepath2);
-
-o.PrintWireGrid();
-console.log();
-// End Temp stuff
+console.log("Day  1 Part 1" + tF(TyrannyOfRocketEquation.Day1Part1));
+console.log("Day  1 Part 2" + tF(TyrannyOfRocketEquation.Day1Part2));
+console.log("Day  2 Part 1" + tF(ProgramAlarm1202.Day2Part1));
+console.log("Day  2 Part 2" + tF(ProgramAlarm1202.Day2Part2));
+console.log("Day  3 Part 1" + tF(CrossedWires.Day3Part1));
 
 console.log();
