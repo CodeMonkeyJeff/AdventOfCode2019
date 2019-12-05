@@ -1,93 +1,82 @@
 "use strict";
 
-import { Opcode } from "./Enum";
+import { Opcode, ParameterMode } from "./Enum";
 
 export class IntcodeMachine {
-    // private readonly _initialTape: number[];
     public Tape: number[];
     private instructionPointer: number;
 
-    // public get Tape(): number[] { return this._tape; }
-    // public set Tape(value: number[]) { this._tape = value; }
-
     public constructor(initialTape: number[]) {
-        // this._initialTape = initialTape;
         this.Tape = Array.from(initialTape);
         this.instructionPointer = 0;
     }
 
-    public static OPC(tape: number[], pointer: number): number[] {
-        const opcode = tape[pointer];
-
+    public OPC(): number[] {
+        const opcode = this.Tape[this.instructionPointer] % 100;    // Only right-most two digits are the opcode
         switch(opcode) {
             case Opcode.ADD:
-                return this.ADD(tape, pointer);
+                return this.ADD();
                 break;
             case Opcode.MUL:
-                return this.MUL(tape, pointer);
+                return this.MUL();
                 break;
             case Opcode.BRK:
-                return tape;
+                return this.BRK();
                 break;
             default:
-                throw new Error("Illegal OPCODE at position " + pointer + " for tape " + tape.join(", "));
+                throw new Error("Illegal OPCODE attempted execution");
                 break;
         }
     }
 
-    private static ADD(tape: number[], pointer: number): number[] {
-        const opcode = tape[pointer];
-        if (opcode != Opcode.ADD) { throw new Error("Bad OPCODE in ADD method"); }
+    // Mainly a placeholder to check instruction calls
+    private CheckOpcodeCall(expectedOpcode: Opcode): void { if ((this.Tape[this.instructionPointer]%100) != expectedOpcode) { throw new Error("Illegal call to " + expectedOpcode); } }
 
-        const position1 = tape[pointer + 1];
-        const position2 = tape[pointer + 2];
-        const destination = tape[pointer + 3];
-
-        const result = tape[position1] + tape[position2];
-        tape[destination] = result;
-        return tape;
-    }
-
-    private static MUL(tape: number[], pointer: number): number[] {
-        const opcode = tape[pointer];
-        if (opcode != Opcode.MUL) { throw new Error("Bad OPCODE in MUL method"); }
-
-        const position1 = tape[pointer + 1];
-        const position2 = tape[pointer + 2];
-        const destination = tape[pointer + 3];
-
-        const result = tape[position1] * tape[position2];
-        tape[destination] = result;
-        return tape;
-    }
-
-    public ExecuteTape(): number[] {
-        let position = 0;
-        while (position < this.Tape.length) {
-            this.Tape = IntcodeMachine.OPC(this.Tape, position);
-
-            if (this.Tape[position] != 99) {                
-                position += IntcodeMachine.GetNumberOfBytes(this.Tape[position]);
-            } else {
-                position = this.Tape.length;
-            }
+    private GetParameters(val: number): number {
+        const mode: number = Math.floor(this.Tape[this.instructionPointer] / Math.pow(10, val + 1)) % 10;
+        switch (mode) {
+            case ParameterMode.Immediate:
+                return this.Tape[this.instructionPointer + val];
+                break;
+            case ParameterMode.Position:
+                return this.Tape[this.Tape[this.instructionPointer + val]];
+                break;
+            default:
+                throw new Error("Illegal Parameter Mode");
+                break;
         }
+    }
 
+    private ADD(): number[] {        
+        this.CheckOpcodeCall(Opcode.ADD);
+
+        const addends = [1, 2].map((val: number): number => this.GetParameters(val));
+        const destination = this.Tape[this.instructionPointer + 3]  //! This should never be in immediate mode as per Day 5 instructions
+        this.Tape[destination] = addends[0] + addends[1];
+
+        this.instructionPointer += 4;
         return this.Tape;
     }
-    
-    public static GetNumberOfBytes(opcode: Opcode): number {
-        switch (opcode) {
-            case Opcode.ADD:
-            case Opcode.MUL:
-                return 4;
-                break;
-            case Opcode.BRK:
-                return 1;
-                break;
-            default:
-                throw new Error("Illegal OPCODE");
-                break;
-        }
+
+    private MUL(): number[] {
+        this.CheckOpcodeCall(Opcode.MUL);
+
+        const multiplicands = [1, 2].map((val: number): number => this.GetParameters(val));
+        const destination = this.Tape[this.instructionPointer + 3]  //! This should never be in immediate mode as per Day 5 instructions
+        this.Tape[destination] = multiplicands[0] * multiplicands[1];
+
+        this.instructionPointer += 4;
+        return this.Tape;
+    }
+
+    private BRK(): number[] {
+        this.instructionPointer = this.Tape.length;
+        return this.Tape;
+    }
+
+
+    public ExecuteTape(): number[] {
+        while (this.instructionPointer < this.Tape.length) { this.Tape = this.OPC(); }
+        return this.Tape;
     }
 }
