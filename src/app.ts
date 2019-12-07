@@ -5,6 +5,7 @@ import { ProgramAlarm1202 } from "./ProgramAlarm1202";
 import { CrossedWires } from "./CrossedWires";
 import { performance } from "perf_hooks";
 import { SecureContainer } from "./SecureContainer";
+import { ThermalEnvironmentSupervisionTerminal } from "./ThermalEnvironmentSupervisionTerminal";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -24,5 +25,7 @@ console.log("Day  3 Part 1" + tF(CrossedWires.Day3Part1));
 console.log("Day  3 Part 2" + tF(CrossedWires.Day3Part2));
 console.log("Day  4 Part 1" + tF(SecureContainer.Day4Part1));
 console.log("Day  4 Part 2" + tF(SecureContainer.Day4Part2));
+console.log("Day  5 Part 1" + tF(ThermalEnvironmentSupervisionTerminal.Day5Part1));
+console.log("Day  5 Part 2" + tF(ThermalEnvironmentSupervisionTerminal.Day5Part2));
 
 console.log();

@@ -5,6 +5,10 @@ export enum Opcode {
     MUL = 2,
     INP = 3,
     OUT = 4,
+    JIT = 5,    // Jump-if-true
+    JIF = 6,    // Jump-if-false
+    LNE = 7,    // Strictly less than
+    EQU = 8,
     BRK = 99
 }
 
