@@ -27,5 +27,6 @@ console.log("Day  4 Part 1" + tF(SecureContainer.Day4Part1));
 console.log("Day  4 Part 2" + tF(SecureContainer.Day4Part2));
 
 console.log("Day  6 Part 1" + tF(UniversalOrbitMap.Day6Part1));
+console.log("Day  6 Part 2" + tF(UniversalOrbitMap.Day6Part2));
 
 console.log();
