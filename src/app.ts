@@ -6,6 +6,7 @@ import { CrossedWires } from "./CrossedWires";
 import { performance } from "perf_hooks";
 import { SecureContainer } from "./SecureContainer";
 import { ThermalEnvironmentSupervisionTerminal } from "./ThermalEnvironmentSupervisionTerminal";
+import { UniversalOrbitMap } from "./UniversalOrbitMap";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -27,5 +28,8 @@ console.log("Day  4 Part 1" + tF(SecureContainer.Day4Part1));
 console.log("Day  4 Part 2" + tF(SecureContainer.Day4Part2));
 console.log("Day  5 Part 1" + tF(ThermalEnvironmentSupervisionTerminal.Day5Part1));
 console.log("Day  5 Part 2" + tF(ThermalEnvironmentSupervisionTerminal.Day5Part2));
+
+console.log("Day  6 Part 1" + tF(UniversalOrbitMap.Day6Part1));
+console.log("Day  6 Part 2" + tF(UniversalOrbitMap.Day6Part2));
 
 console.log();
