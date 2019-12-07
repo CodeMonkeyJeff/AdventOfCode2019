@@ -8,12 +8,14 @@ export class ThermalEnvironmentSupervisionTerminal {
     public static Day5Part1(): string {
         const machine = new IntcodeMachine(ThermalEnvironmentSupervisionTerminal._input, { InputValues: [1], SilentMode: true });
         machine.ExecuteTape();
-        return machine.Tape[223].toString();
+        // return machine.Tape[223].toString();
+        return machine.OutputValues[0].toString();
     }
 
     public static Day5Part2(): string {
         const machine = new IntcodeMachine(ThermalEnvironmentSupervisionTerminal._input, { InputValues: [5], SilentMode: true });
         machine.ExecuteTape();
-        return machine.Tape[223].toString();
+        // return machine.Tape[223].toString();
+        return machine.OutputValues[0].toString();
     }
 }

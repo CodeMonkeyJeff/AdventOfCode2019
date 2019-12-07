@@ -6,7 +6,8 @@ import { IntcodeMachineOptions } from "./Types";
 export class IntcodeMachine {
     public Tape: number[];
     private _instructionPointer: number;
-    private _options: IntcodeMachineOptions;
+    private readonly _options: IntcodeMachineOptions;
+    public readonly OutputValues: number[];
 
     public constructor(initialTape: number[], options: Partial<IntcodeMachineOptions> = {}) {
         this.Tape = Array.from(initialTape);
@@ -15,10 +16,12 @@ export class IntcodeMachine {
             InputValues: new Array<number>(),
             VerboseMode: false,
             SilentMode: false,
+            BreakOnOutput: false,
         }, options);
+        this.OutputValues = new Array<number>();
     }
 
-    public OPC(): number[] {
+    public OPC(): IntcodeMachine {
         const opcode = this.Tape[this._instructionPointer] % 100;    // Only right-most two digits are the opcode
         switch(opcode) {
             case Opcode.ADD:
@@ -74,7 +77,7 @@ export class IntcodeMachine {
         }
     }
 
-    private ADD(): number[] {        
+    private ADD(): IntcodeMachine {        
         this.CheckOpcodeCall(Opcode.ADD);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " ADD "); }
 
@@ -85,10 +88,10 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
-        return this.Tape;
+        return this;
     }
 
-    private MUL(): number[] {
+    private MUL(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.MUL);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " MUL "); }
 
@@ -99,17 +102,19 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
-        return this.Tape;
+        return this;
     }
 
-    private BRK(): number[] {
+    private BRK(): IntcodeMachine {
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " BRK "); }
         if (this._options.VerboseMode) { console.log(); }
-        this._instructionPointer = this.Tape.length;
-        return this.Tape;
+
+        this._instructionPointer += 1;
+        // return this;
+        return null;
     }
 
-    private INP(): number[] {
+    private INP(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.INP);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " INP "); }
 
@@ -117,27 +122,31 @@ export class IntcodeMachine {
         if (this._options.VerboseMode) { process.stdout.write(" &" + this.Tape[this._instructionPointer + 1]); }
         const destination = this.Tape[this._instructionPointer + 1];
 
+        if (this._options.InputValues.length == 0) { throw new Error("Did not specify an input value!"); }
         const input = this._options.InputValues.shift();
         if (this._options.VerboseMode) { process.stdout.write(" <== #" + input); }
         this.Tape[destination] = input;
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
-        return this.Tape;
+        return this;
     }
 
-    private OUT(): number[] {
+    private OUT(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.OUT);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " OUT "); }
         const value = this.GetParameters(1);
 
+        this.OutputValues.push(value);       // For easy retrieval later
         if (!this._options.SilentMode) { console.log(" ==> #" + value.toString()); }
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
-        return this.Tape;
+
+        if (this._options.BreakOnOutput) { return null; } else { return this; }
+        // return this;
     }
 
-    private JIT(): number[] {
+    private JIT(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.JIT);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " JIT "); }        
         const conditional = this.GetParameters(1);
@@ -145,10 +154,10 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer = conditional != 0 ? jumpAddress : this._instructionPointer + 3;
-        return this.Tape;
+        return this;
     }
 
-    private JIF(): number[] {
+    private JIF(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.JIF);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " JIF "); }
         const conditional = this.GetParameters(1);
@@ -156,10 +165,10 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer = conditional == 0 ? jumpAddress : this._instructionPointer + 3;
-        return this.Tape;
+        return this;
     }
 
-    private LNE(): number[] {
+    private LNE(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.LNE);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " LNE "); }        
 
@@ -170,10 +179,10 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
-        return this.Tape;
+        return this;
     }
 
-    private EQU(): number[] {
+    private EQU(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.EQU);
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " EQU "); }        
 
@@ -184,13 +193,12 @@ export class IntcodeMachine {
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
-        return this.Tape;
+        return this;
     }
 
-    public ExecuteTape(): number[] {
-        while (this._instructionPointer < this.Tape.length) { 
-            this.Tape = this.OPC(); 
-        }
-        return this.Tape;
+    public ExecuteTape(): IntcodeMachine {
+        let shouldBreak = false;
+        while (!shouldBreak) { shouldBreak = this.OPC() === null; }
+        return this;
     }
 }

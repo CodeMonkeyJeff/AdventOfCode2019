@@ -15,7 +15,7 @@ describe("Day 2 -- Intcode", function (): void {
             it(test.tape.join(", "), function() {
                 const machine = new IntcodeMachine(test.tape);
                 const result = machine.OPC();
-                assert.deepEqual(result, test.result);
+                assert.deepEqual(result.Tape, test.result);
             });
         });
     });
@@ -31,7 +31,7 @@ describe("Day 2 -- Intcode", function (): void {
             it(test.tape.join(", "), function() {
                 const machine = new IntcodeMachine(test.tape);
                 const result = machine.OPC();
-                assert.deepEqual(result, test.result);
+                assert.deepEqual(result.Tape, test.result);
             });
         });
     });
@@ -44,35 +44,37 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const machine = new IntcodeMachine(test.tape);
-                const result = machine.OPC();
-                assert.deepEqual(result, test.tape);
+                const machine = new IntcodeMachine(test.tape).ExecuteTape();
+                // const result = machine.ExecuteTape();
+                assert.deepEqual(machine.Tape, test.tape);
             });
         });
     });
     
     describe("AdventOfCode Tests", function(): void {
         const tests = [
-            { tape: [3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9, 1], inputs: [1], position: 13, result: 1 },
-            { tape: [3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9, 2], inputs: [0], position: 13, result: 0 },
-            { tape: [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1, 1], inputs: [1], position: 12, result: 1 },
-            { tape: [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1, 2], inputs: [0], position: 12, result: 0 },                        
-            { tape: [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8, 1], inputs: [8], position: 9, result: 1 },
-            { tape: [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8, 2], inputs: [1], position: 9, result: 0 },
-            { tape: [3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8, 1], inputs: [1], position: 9, result: 1 },
-            { tape: [3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8, 2], inputs: [9], position: 9, result: 0 },
-            { tape: [3, 3, 1108, -1, 8, 3, 4, 3, 99, 1], inputs: [8], position: 3, result: 1 },
-            { tape: [3, 3, 1108, -1, 8, 3, 4, 3, 99, 2], inputs: [1], position: 3, result: 0 },
-            { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 1], inputs: [1], position: 3, result: 1 },
-            { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 2], inputs: [9], position: 3, result: 0 },            
+            { tape: [3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9, 1], inputs: [1],result: 1 },
+            { tape: [3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 0, 1, 9, 2], inputs: [0], result: 0 },
+            { tape: [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1, 1], inputs: [1],  result: 1 },
+            { tape: [3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1, 2], inputs: [0],  result: 0 },                        
+            { tape: [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8, 1], inputs: [8],  result: 1 },
+            { tape: [3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8, 2], inputs: [1],  result: 0 },
+            { tape: [3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8, 1], inputs: [1],  result: 1 },
+            { tape: [3, 9, 7, 9, 10, 9, 4, 9, 99, -1, 8, 2], inputs: [9],  result: 0 },
+            { tape: [3, 3, 1108, -1, 8, 3, 4, 3, 99, 1], inputs: [8], result: 1 },
+            { tape: [3, 3, 1108, -1, 8, 3, 4, 3, 99, 2], inputs: [1], result: 0 },
+            { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 1], inputs: [1], result: 1 },
+            { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 2], inputs: [9], result: 0 },            
             { tape: [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99, 2], inputs: [8], position: 20, result: 1000 },
             { tape: [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99, 3], inputs: [9], position: 20, result: 1001 }
         ];
 
         tests.forEach((test): void => {
             it (test.tape.join(", "), function() {
-                const result = new IntcodeMachine(test.tape, { InputValues: test.inputs, VerboseMode: true }).ExecuteTape();
-                assert.equal(result[test.position], test.result);
+                const machine = new IntcodeMachine(test.tape, { InputValues: test.inputs, VerboseMode: true }).ExecuteTape();
+                // machine.ExecuteTape();
+                const result = machine.OutputValues[0];
+                assert.equal(result, test.result);
             });
         });
     });
@@ -90,7 +92,7 @@ describe("Day 2 -- Intcode", function (): void {
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
                 const result = new IntcodeMachine(test.tape).ExecuteTape();
-                assert.deepEqual(result, test.result);
+                assert.deepEqual(result.Tape, test.result);
             });
         });
     });
