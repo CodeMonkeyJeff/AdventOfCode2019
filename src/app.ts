@@ -8,6 +8,7 @@ import { SecureContainer } from "./SecureContainer";
 import { ThermalEnvironmentSupervisionTerminal } from "./ThermalEnvironmentSupervisionTerminal";
 import { UniversalOrbitMap } from "./UniversalOrbitMap";
 import { AmplificationCircuit } from "./AmplificationCircuit";
+import { SpaceImageFormat } from "./SpaceImageFormat";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -33,5 +34,6 @@ console.log("Day  6 Part 1" + tF(UniversalOrbitMap.Day6Part1));
 console.log("Day  6 Part 2" + tF(UniversalOrbitMap.Day6Part2));
 console.log("Day  7 Part 1" + tF(AmplificationCircuit.Day7Part1));
 console.log("Day  7 Part 2" + tF(AmplificationCircuit.Day7Part2));
+console.log("Day  8 Part 1" + tF(SpaceImageFormat.Day8Part1));
 
 console.log();
