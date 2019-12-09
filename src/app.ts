@@ -32,5 +32,6 @@ console.log("Day  5 Part 2" + tF(ThermalEnvironmentSupervisionTerminal.Day5Part2
 console.log("Day  6 Part 1" + tF(UniversalOrbitMap.Day6Part1));
 console.log("Day  6 Part 2" + tF(UniversalOrbitMap.Day6Part2));
 console.log("Day  7 Part 1" + tF(AmplificationCircuit.Day7Part1));
+console.log("Day  7 Part 2" + tF(AmplificationCircuit.Day7Part2));
 
 console.log();

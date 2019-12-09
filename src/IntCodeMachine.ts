@@ -5,11 +5,15 @@ import { IntcodeMachineOptions } from "./Types";
 
 export class IntcodeMachine {
     public Tape: number[];
+    private readonly _initialTape: number[];
     private _instructionPointer: number;
     private readonly _options: IntcodeMachineOptions;
+    public InputValues: number[];
     public readonly OutputValues: number[];
+    public readonly BreakOnOutput: boolean;
 
     public constructor(initialTape: number[], options: Partial<IntcodeMachineOptions> = {}) {
+        this._initialTape = initialTape;
         this.Tape = Array.from(initialTape);
         this._instructionPointer = 0;
         this._options = Object.assign({
@@ -18,12 +22,17 @@ export class IntcodeMachine {
             SilentMode: false,
             BreakOnOutput: false,
         }, options);
+
+        this.InputValues = this._options.InputValues;
         this.OutputValues = new Array<number>();
+        this.BreakOnOutput = this._options.BreakOnOutput;
     }
 
+    public get CurrentInstruction(): number { return this.Tape[this._instructionPointer] % 100; }
+
     public OPC(): IntcodeMachine {
-        const opcode = this.Tape[this._instructionPointer] % 100;    // Only right-most two digits are the opcode
-        switch(opcode) {
+        // const opcode = this.Tape[this._instructionPointer] % 100;    // Only right-most two digits are the opcode
+        switch(this.CurrentInstruction) {
             case Opcode.ADD:
                 return this.ADD();
                 break;
@@ -57,7 +66,7 @@ export class IntcodeMachine {
         }
     }
 
-    private CheckOpcodeCall(expectedOpcode: Opcode): void { if ((this.Tape[this._instructionPointer]%100) != expectedOpcode) { throw new Error("Illegal call to " + expectedOpcode); } }
+    private CheckOpcodeCall(expectedOpcode: Opcode): void { if (this.CurrentInstruction != expectedOpcode) { throw new Error("Illegal call to " + expectedOpcode); } }
 
     private GetParameters(val: number): number {
         const mode: number = Math.floor(this.Tape[this._instructionPointer] / Math.pow(10, val + 1)) % 10;
@@ -109,7 +118,7 @@ export class IntcodeMachine {
         if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " BRK "); }
         if (this._options.VerboseMode) { console.log(); }
 
-        this._instructionPointer += 1;
+        // this._instructionPointer += 1;       // If BRK is executed, keep PS idempotent so repeated execution breaks as well
         // return this;
         return null;
     }
@@ -122,8 +131,8 @@ export class IntcodeMachine {
         if (this._options.VerboseMode) { process.stdout.write(" &" + this.Tape[this._instructionPointer + 1]); }
         const destination = this.Tape[this._instructionPointer + 1];
 
-        if (this._options.InputValues.length == 0) { throw new Error("Did not specify an input value!"); }
-        const input = this._options.InputValues.shift();
+        if (this.InputValues.length == 0) { throw new Error("Did not specify an input value!"); }
+        const input = this.InputValues.shift();
         if (this._options.VerboseMode) { process.stdout.write(" <== #" + input); }
         this.Tape[destination] = input;
 
