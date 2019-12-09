@@ -35,5 +35,6 @@ console.log("Day  6 Part 2" + tF(UniversalOrbitMap.Day6Part2));
 console.log("Day  7 Part 1" + tF(AmplificationCircuit.Day7Part1));
 console.log("Day  7 Part 2" + tF(AmplificationCircuit.Day7Part2));
 console.log("Day  8 Part 1" + tF(SpaceImageFormat.Day8Part1));
+console.log("Day  8 Part 2" + tF(SpaceImageFormat.Day8Part2));
 
 console.log();

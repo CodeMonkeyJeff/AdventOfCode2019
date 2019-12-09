@@ -33,4 +33,19 @@ describe("Day 8 -- SpaceImageFormat", function() {
             })
         });
     });
+
+    describe("FlattenImage", function() {
+        const tests = [
+            { data: "0222112222120000", dx: 2, dy: 2, result: [0, 1, 1, 0] }
+        ];
+
+        tests.forEach((test): void => {
+            it(test.data, function(): void {
+                const image = new SpaceImageFormat(test.data);
+                image.SetDimensions(test.dx, test.dy);
+                const result = image.FlattenImage();
+                assert.deepEqual(result, test.result);
+            });
+        });
+    });
 });
