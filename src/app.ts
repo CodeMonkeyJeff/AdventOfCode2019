@@ -9,6 +9,7 @@ import { ThermalEnvironmentSupervisionTerminal } from "./ThermalEnvironmentSuper
 import { UniversalOrbitMap } from "./UniversalOrbitMap";
 import { AmplificationCircuit } from "./AmplificationCircuit";
 import { SpaceImageFormat } from "./SpaceImageFormat";
+import { SensorBoost } from "./SensorBoost";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -36,5 +37,6 @@ console.log("Day  7 Part 1" + tF(AmplificationCircuit.Day7Part1));
 console.log("Day  7 Part 2" + tF(AmplificationCircuit.Day7Part2));
 console.log("Day  8 Part 1" + tF(SpaceImageFormat.Day8Part1));
 console.log("Day  8 Part 2" + tF(SpaceImageFormat.Day8Part2));
+console.log("Day  9 Part 1" + tF(SensorBoost.Day9Part1));
 
 console.log();

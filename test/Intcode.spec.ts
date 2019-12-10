@@ -66,7 +66,8 @@ describe("Day 2 -- Intcode", function (): void {
             { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 1], inputs: [1], result: 1 },
             { tape: [3, 3, 1107, -1, 8, 3, 4, 3, 99, 2], inputs: [9], result: 0 },            
             { tape: [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99, 2], inputs: [8], position: 20, result: 1000 },
-            { tape: [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99, 3], inputs: [9], position: 20, result: 1001 }
+            { tape: [3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31, 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104, 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99, 3], inputs: [9], position: 20, result: 1001 },
+            { tape: [104, 1123899906842624, 99], input: [], result: 1123899906842624 }
         ];
 
         tests.forEach((test): void => {
@@ -81,17 +82,20 @@ describe("Day 2 -- Intcode", function (): void {
 
     describe("ExecuteTape", function(): void {
         const tests = [
+            { tape: [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99], result: [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99] },
+
             { tape: [1, 0, 0, 0, 99], result: [2, 0, 0, 0, 99] },
             { tape: [2, 3, 0, 3, 99], result: [2, 3, 0, 6, 99] },
             { tape: [2, 4, 4, 5, 99, 0], result: [2, 4, 4, 5, 99, 9801] },
             { tape: [1, 1, 1, 4, 99, 5, 6, 0, 99], result: [30, 1, 1, 4, 2, 5, 6, 0, 99] },
             { tape: [1101, 100, -1, 4, 0], result: [1101, 100, -1, 4, 99] },
-            { tape: [1102, 33, 3, 4, 0], result: [1102, 33, 3, 4, 99] },
+            { tape: [1102, 33, 3, 4, 0], result: [1102, 33, 3, 4, 99] }
+            
         ];
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const result = new IntcodeMachine(test.tape).ExecuteTape();
+                const result = new IntcodeMachine(test.tape, {VerboseMode: true}).ExecuteTape();
                 assert.deepEqual(result.Tape, test.result);
             });
         });
