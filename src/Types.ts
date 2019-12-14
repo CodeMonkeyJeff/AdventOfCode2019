@@ -1,7 +1,7 @@
 "use strict";
 
 export type IntcodeMachineOptions = {
-    InputValues: number[];
+    InputValues: bigint[];
     VerboseMode: boolean;
     SilentMode: boolean;
     BreakOnOutput: boolean;

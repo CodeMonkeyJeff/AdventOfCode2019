@@ -4,37 +4,36 @@ import { Opcode, ParameterMode } from "./Enum";
 import { IntcodeMachineOptions } from "./Types";
 
 export class IntcodeMachine {
-    public Tape: number[];
-    public InputValues: number[];
-    public readonly OutputValues: number[];
+    public Tape: bigint[];
+    public InputValues: bigint[];
+    public readonly OutputValues: bigint[];
     public readonly BreakOnOutput: boolean;
 
     private _instructionPointer: number;
-    private readonly _initialTape: number[];
+    private readonly _initialTape: bigint[];
     private readonly _options: IntcodeMachineOptions;
     private _relativeBase: number;
 
-    public constructor(initialTape: number[], options: Partial<IntcodeMachineOptions> = {}) {
+    public constructor(initialTape: bigint[], options: Partial<IntcodeMachineOptions> = {}) {
         this._initialTape = initialTape;
         this.Tape = Array.from(initialTape);
         this._instructionPointer = 0;
         this._relativeBase = 0;
         this._options = Object.assign({
-            InputValues: new Array<number>(),
+            InputValues: new Array<bigint>(),
             VerboseMode: false,
             SilentMode: false,
             BreakOnOutput: false,
         }, options);
 
         this.InputValues = this._options.InputValues;
-        this.OutputValues = new Array<number>();
+        this.OutputValues = new Array<bigint>();
         this.BreakOnOutput = this._options.BreakOnOutput;
     }
 
-    public get CurrentInstruction(): number { return this.Tape[this._instructionPointer] % 100; }
+    public get CurrentInstruction(): number { return Number(this.Tape[this._instructionPointer] % 100n); }
 
     public OPC(): IntcodeMachine {
-        // const opcode = this.Tape[this._instructionPointer] % 100;    // Only right-most two digits are the opcode
         switch(this.CurrentInstruction) {
             case Opcode.ADD:
                 return this.ADD();
@@ -72,8 +71,6 @@ export class IntcodeMachine {
         }
     }
 
-    // TODO:  Big number support
-    // TODO:  Update verbose strings to leverage this static method
     private WriteVerbose(message: string, outputProgramCounter = true): void { 
         if (this._options.VerboseMode) {
             if (outputProgramCounter) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " "); }
@@ -81,12 +78,7 @@ export class IntcodeMachine {
         } 
     }
 
-    private WriteDestination(destination: number, value: number): IntcodeMachine {
-        // if (this.Tape.length < destination) {            
-        //     const extArray: number[] = new Array(destination - this.Tape.length).fill(0);
-        //     this.Tape.push(...extArray);
-        // }
-
+    private WriteDestination(destination: number, value: bigint): IntcodeMachine {
         this.ExtendTape(destination);
         this.Tape[destination] = value;
         return this;
@@ -94,23 +86,26 @@ export class IntcodeMachine {
 
     private CheckOpcodeCall(expectedOpcode: Opcode): void { if (this.CurrentInstruction != expectedOpcode) { throw new Error("Illegal call to " + expectedOpcode); } }
 
-    private GetParameters(position: number): number {
-        const mode: number = Math.floor(this.Tape[this._instructionPointer] / Math.pow(10, position + 1)) % 10;
+    private GetParameters(position: number, isDestination = false): bigint {
+        const mode = Math.floor(Number(this.Tape[this._instructionPointer]) / Math.pow(10, position+1)) % 10;
         const addr = this._instructionPointer + position;
         this.ExtendTape(addr);
+
         switch (mode) {            
-            case ParameterMode.Position:                
-                this.WriteVerbose("&" + this.Tape[addr].toString(), false);
-                this.ExtendTape(this.Tape[addr]);
-                return this.Tape[this.Tape[addr]];
+            case ParameterMode.Position:
+                this.WriteVerbose("&" + Number(this.Tape[addr]).toString(), false);
+                this.ExtendTape(Number(this.Tape[addr]));
+                return isDestination ? this.Tape[addr] : this.Tape[Number(this.Tape[addr])];
                 break;
             case ParameterMode.Immediate:
                 this.WriteVerbose("#" + this.Tape[addr].toString(), false);
+                this.ExtendTape(Number(addr));
                 return this.Tape[addr];
                 break;
             case ParameterMode.Relative:
-                    this.WriteVerbose(this.Tape[addr].toString() + ", " + this._relativeBase.toString(), false);
-                    return this.Tape[this.Tape[addr]] + this._relativeBase;
+                this.WriteVerbose(this.Tape[addr].toString() + ", " + this._relativeBase.toString(), false);
+                this.ExtendTape(Number(this.Tape[addr]) + this._relativeBase);
+                return isDestination ? this.Tape[addr] + BigInt(this._relativeBase) : this.Tape[Number(this.Tape[addr]) + this._relativeBase];
                 break;
             default:
                 throw new Error("Parameter Mode is Illegal or Not Implemented");
@@ -120,21 +115,18 @@ export class IntcodeMachine {
 
     private ExtendTape (destination: number): void {
         if (this.Tape.length < destination) {            
-            const extArray: number[] = new Array(destination - this.Tape.length).fill(0);
+            const extArray: bigint[] = new Array(destination - this.Tape.length + 1).fill(0n);
             this.Tape.push(...extArray);
         }
     }
 
     private ADD(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.ADD);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " ADD "); }
         this.WriteVerbose("ADD");
 
-        const addends = [1, 2].map((val: number): number => this.GetParameters(val));
-        if (this._options.VerboseMode) { process.stdout.write(" &" + this._instructionPointer + 3); }
-        const destination = this.Tape[this._instructionPointer + 3];
-        // this.Tape[destination] = addends[0] + addends[1];
-        this.WriteDestination(destination, addends[0]+addends[1])
+        const addends = [1, 2].map((val: number): bigint => this.GetParameters(val));
+        const destination = Number(this.GetParameters(3, true));
+        this.WriteDestination(destination, addends[0] + addends[1]);
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
@@ -143,13 +135,10 @@ export class IntcodeMachine {
 
     private MUL(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.MUL);
-        if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " MUL "); }
+        this.WriteVerbose("MUL");
 
-        const multiplicands = [1, 2].map((val: number): number => this.GetParameters(val));
-        if (this._options.VerboseMode) { process.stdout.write(" &" + this._instructionPointer + 3); }
-        
-        const destination = this.Tape[this._instructionPointer + 3];
-        // this.Tape[destination] = multiplicands[0] * multiplicands[1];
+        const multiplicands = [1, 2].map((val: number): bigint => this.GetParameters(val));
+        const destination = Number(this.GetParameters(3, true));
         this.WriteDestination(destination, multiplicands[0] * multiplicands[1]);
 
         if (this._options.VerboseMode) { console.log(); }
@@ -158,7 +147,6 @@ export class IntcodeMachine {
     }
 
     private BRK(): IntcodeMachine {
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " BRK "); }
         this.WriteVerbose("BRK");
         if (this._options.VerboseMode) { console.log(); }
 
@@ -168,18 +156,16 @@ export class IntcodeMachine {
 
     private INP(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.INP);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " INP "); }
         this.WriteVerbose("INP");
 
         // Spec says to take this from the command line, but ain't nobody got time for that.
-        if (this._options.VerboseMode) { process.stdout.write(" &" + this.Tape[this._instructionPointer + 1]); }
-        const destination = this.Tape[this._instructionPointer + 1];
-
         if (this.InputValues.length == 0) { throw new Error("Did not specify an input value!"); }
-        const input = this.InputValues.shift();
-        if (this._options.VerboseMode) { process.stdout.write(" <== #" + input); }
+
+        const input = this.InputValues.shift();        
+        const destination = Number(this.GetParameters(1, true));
         this.Tape[destination] = input;
 
+        if (this._options.VerboseMode) { process.stdout.write(" <== #" + input); }
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
         return this;
@@ -196,15 +182,14 @@ export class IntcodeMachine {
         this._instructionPointer += 2;
 
         if (this._options.BreakOnOutput) { return null; } else { return this; }
-        // return this;
     }
 
     private JIT(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.JIT);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " JIT "); }
         this.WriteVerbose("JIT");
-        const conditional = this.GetParameters(1);
-        const jumpAddress = this.GetParameters(2);
+
+        const conditional = Number(this.GetParameters(1));
+        const jumpAddress = Number(this.GetParameters(2));
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer = conditional != 0 ? jumpAddress : this._instructionPointer + 3;
@@ -213,10 +198,10 @@ export class IntcodeMachine {
 
     private JIF(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.JIF);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " JIF "); }
         this.WriteVerbose("JIF");
-        const conditional = this.GetParameters(1);
-        const jumpAddress = this.GetParameters(2);
+
+        const conditional = Number(this.GetParameters(1));
+        const jumpAddress = Number(this.GetParameters(2));
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer = conditional == 0 ? jumpAddress : this._instructionPointer + 3;
@@ -225,15 +210,11 @@ export class IntcodeMachine {
 
     private LNE(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.LNE);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " LNE "); }
         this.WriteVerbose("LNE");
 
-        const comparators = [1, 2].map((val: number): number => this.GetParameters(val));
-        if (this._options.VerboseMode) { process.stdout.write(" &" + this._instructionPointer + 3); }
-        
-        const destination = this.Tape[this._instructionPointer + 3];
-        // this.Tape[destination] = comparators[0] < comparators[1] ? 1 : 0;
-        this.WriteDestination(destination, comparators[0] < comparators[1] ? 1 : 0);
+        const comparators = [1, 2].map((val: number): bigint => this.GetParameters(val));
+        const destination = Number(this.GetParameters(3, true));
+        this.WriteDestination(destination, comparators[0] < comparators[1] ? 1n : 0n);
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
@@ -242,15 +223,11 @@ export class IntcodeMachine {
 
     private EQU(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.EQU);
-        // if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " EQU "); }
         this.WriteVerbose("EQU");
 
-        const comparators = [1, 2].map((val: number): number => this.GetParameters(val));
-        if (this._options.VerboseMode) { process.stdout.write(" &" + this._instructionPointer + 3); }
-        
-        const destination = this.Tape[this._instructionPointer + 3];
-        // this.Tape[destination] = comparators[0] == comparators[1] ? 1 : 0;
-        this.WriteDestination(destination, comparators[0] == comparators[1] ? 1 : 0);
+        const comparators = [1, 2].map((val: number): bigint => this.GetParameters(val));
+        const destination = Number(this.GetParameters(3, true));
+        this.WriteDestination(destination, comparators[0] == comparators[1] ? 1n : 0n);
 
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 4;
@@ -259,21 +236,21 @@ export class IntcodeMachine {
 
     // ARB == Adjust Relative Base
     private ARB(): IntcodeMachine {
-        // this._relativeBase += this.Tape[this._instructionPointer + 1];
-        // const offset = this.Tape[this._instructionPointer + 1];
-        const offset = this.GetParameters(1);
-        this.WriteVerbose("ARB #" + offset.toString());
+        this.CheckOpcodeCall(Opcode.ARB);
+        this.WriteVerbose("ARB");
 
-        this._relativeBase += offset;
-        
-        if (this._options.VerboseMode) { console.log(); }        
+        this._relativeBase += Number(this.GetParameters(1));        
+        if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
         return this;
     }
 
     public ExecuteTape(): IntcodeMachine {
         let shouldBreak = false;
-        while (!shouldBreak) { shouldBreak = this.OPC() === null; }
+        while (!shouldBreak) {
+            const result = this.OPC();
+            shouldBreak = result === null; 
+        }
         return this;
     }
 }
