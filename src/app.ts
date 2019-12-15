@@ -10,6 +10,7 @@ import { UniversalOrbitMap } from "./UniversalOrbitMap";
 import { AmplificationCircuit } from "./AmplificationCircuit";
 import { SpaceImageFormat } from "./SpaceImageFormat";
 import { SensorBoost } from "./SensorBoost";
+import { MonitoringStation } from "./MonitoringStation";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -39,5 +40,6 @@ console.log("Day  8 Part 1" + tF(SpaceImageFormat.Day8Part1));
 console.log("Day  8 Part 2" + tF(SpaceImageFormat.Day8Part2));
 console.log("Day  9 Part 1" + tF(SensorBoost.Day9Part1));
 console.log("Day  9 Part 2" + tF(SensorBoost.Day9Part2));
+console.log("Day 10 Part 1" + tF(MonitoringStation.Day10Part1));
 
 console.log();
