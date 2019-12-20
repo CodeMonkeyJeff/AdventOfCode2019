@@ -6,3 +6,8 @@ export type IntcodeMachineOptions = {
     SilentMode: boolean;
     BreakOnOutput: boolean;
 }
+
+export type Point = {
+    x: number;
+    y: number;
+}

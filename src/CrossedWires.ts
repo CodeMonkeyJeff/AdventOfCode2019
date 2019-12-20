@@ -1,20 +1,22 @@
 "use strict";
 
 import { WireDirection } from "./Enum";
-import { Point } from "./Interface";
+import { Point } from "./Types";
+
+type WirePoint = { [P in keyof Point]: Point[P]; } & { step: number } // Intesection type to extend Point
 
 export class CrossedWires {
     public readonly WirePath1: string[];
-    private _wire1Points: Point[];
+    private _wire1Points: WirePoint[];
     public readonly WirePath2: string[];
-    private _wire2Points: Point[];
+    private _wire2Points: WirePoint[];
 
-    public get WirePath1Points(): Point[] { 
+    public get WirePath1Points(): WirePoint[] { 
         if (this._wire1Points.length == 0) { this._wire1Points = this.GetWirePositions(this.WirePath1); }
         return this._wire1Points;
     }
 
-    public get WirePath2Points(): Point[] {
+    public get WirePath2Points(): WirePoint[] {
         if (this._wire2Points.length == 0) { this._wire2Points = this.GetWirePositions(this.WirePath2); }
         return this._wire2Points;
     }
@@ -28,8 +30,8 @@ export class CrossedWires {
         this._wire2Points = [];
     }
 
-    public GetWirePositions(path: string[]): Point[] {
-        const positions: Point[] = Array<Point>();
+    public GetWirePositions(path: string[]): WirePoint[] {
+        const positions: WirePoint[] = Array<WirePoint>();
         const current = { x: 0, y: 0 };
         let step = 0;
 
@@ -59,27 +61,26 @@ export class CrossedWires {
         return positions;
     }
 
-    public GetIntersectionPoints(): Point[] {
+    public GetIntersectionPoints(): WirePoint[] {
         const origin = { x: 0, y: 0 };
         const d = {};
-        const points: Point[] = new Array<Point>();
+        const points: WirePoint[] = new Array<WirePoint>();
 
         // Organizing the points by distance (for easy lookup)
-        this.WirePath1Points.forEach((val: Point): void => {
+        this.WirePath1Points.forEach((val: WirePoint): void => {
             const distance = CrossedWires.GetDistance(origin, val);
-            if (d[distance] === undefined) { d[distance] = new Array<Point>(); }
+            if (d[distance] === undefined) { d[distance] = new Array<WirePoint>(); }
             d[distance].push(val);
         });
 
-        this.WirePath2Points.forEach((val: Point): void => {
+        this.WirePath2Points.forEach((val: WirePoint): void => {
             const distance = CrossedWires.GetDistance(origin, val);
             if (d[distance] !== undefined) { 
-                const dist = d[distance].filter((p: Point) => (p.x == val.x) && (p.y == val.y) && (p.step));
+                const dist = d[distance].filter((p: WirePoint) => (p.x == val.x) && (p.y == val.y) && (p.step));
                 if (dist.length > 0) {
-                    const minStep = Math.min(dist.map((intersectedPoint: Point): number => intersectedPoint.step));
+                    const minStep = Math.min(dist.map((intersectedPoint: WirePoint): number => intersectedPoint.step));
                     points.push({ x: val.x, y: val.y, step: (minStep + val.step) });
                 }
-                // if (d[distance].filter((p: Point) => (p.x == val.x) && (p.y == val.y)).length > 0) { points.push(val); } 
             }
         });
 
@@ -88,13 +89,13 @@ export class CrossedWires {
 
     public GetClosestIntersectionDistance(): number {
         const origin = { x: 0, y: 0 };
-        const intersections: Point[] = this.GetIntersectionPoints();
-        return Math.min(...intersections.map((p: Point): number => CrossedWires.GetDistance(origin, p)));
+        const intersections: WirePoint[] = this.GetIntersectionPoints();
+        return Math.min(...intersections.map((p: WirePoint): number => CrossedWires.GetDistance(origin, p)));
     }
 
     public GetFewestCombinedSteps(): number {
-        const intersections: Point[] = this.GetIntersectionPoints();
-        return Math.min(...intersections.map((p: Point): number => p.step));
+        const intersections: WirePoint[] = this.GetIntersectionPoints();
+        return Math.min(...intersections.map((p: WirePoint): number => p.step));
     }
 
     public static GetDistance(point1: Point, point2: Point): number { return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); }

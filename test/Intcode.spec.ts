@@ -13,7 +13,7 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)));
+                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), { SilentMode: true });
                 const result = machine.OPC();
                 assert.deepEqual(result.Tape, test.result);
             });
@@ -29,7 +29,7 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)));
+                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), { SilentMode: true });
                 const result = machine.OPC();
                 assert.deepEqual(result.Tape, test.result);
             });
@@ -44,8 +44,7 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val))).ExecuteTape();
-                // const result = machine.ExecuteTape();
+                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), { SilentMode: true }).ExecuteTape();
                 assert.deepEqual(machine.Tape, test.tape);
             });
         });
@@ -73,7 +72,7 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it (test.tape.join(", "), function() {
-                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), { InputValues: test.inputs.map((val: number): bigint => BigInt(val)), VerboseMode: true }).ExecuteTape();
+                const machine = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), { InputValues: test.inputs.map((val: number): bigint => BigInt(val)), SilentMode: true }).ExecuteTape();
                 const result = machine.OutputValues[0];
                 assert.equal(result, test.result);
             });
@@ -95,7 +94,7 @@ describe("Day 2 -- Intcode", function (): void {
 
         tests.forEach((test): void => {
             it(test.tape.join(", "), function() {
-                const result = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), {VerboseMode: true}).ExecuteTape();
+                const result = new IntcodeMachine(test.tape.map((val: number): bigint => BigInt(val)), {SilentMode: true}).ExecuteTape();
                 assert.deepEqual(result.Tape, test.result);
             });
         });

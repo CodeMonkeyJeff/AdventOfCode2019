@@ -13,7 +13,7 @@ describe("Day 7 -- AmplificationCircuit", function() {
 
         tests.forEach((test): void => {
             it(test.AmpCode.join(", "), function(): void {
-                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)));
+                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)), { SilentMode: true });
                 const result = circuit.CalculateThrust(test.phaseSettings);
                 assert.equal(result, test.result);
             });
@@ -33,7 +33,7 @@ describe("Day 7 -- AmplificationCircuit", function() {
 
         tests.forEach((test): void => {
             it(test.AmpCode.join(", "), function(): void {
-                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)), { BreakOnOutput: test.isFeedbackEnabled });     // Turns on BRK on OUTPUT
+                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)), { BreakOnOutput: test.isFeedbackEnabled, SilentMode: true });     // Turns on BRK on OUTPUT
                 const result = circuit.GetMaxPhaseSettingSequence(test.isFeedbackEnabled);
                 assert.deepEqual(result, test.result);
             });
@@ -48,7 +48,7 @@ describe("Day 7 -- AmplificationCircuit", function() {
 
         tests.forEach((test): void => {
             it(test.AmpCode.join(", "), function(): void {
-                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)), { BreakOnOutput: true });
+                const circuit = new AmplificationCircuit(test.AmpCode.map((val: number): bigint => BigInt(val)), { BreakOnOutput: true, SilentMode: true });
                 const result = circuit.CalculateThrustWithFeedback(test.phaseSettings);
                 assert.equal(result, test.result);
             });            

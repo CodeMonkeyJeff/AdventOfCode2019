@@ -41,5 +41,6 @@ console.log("Day  8 Part 2" + tF(SpaceImageFormat.Day8Part2));
 console.log("Day  9 Part 1" + tF(SensorBoost.Day9Part1));
 console.log("Day  9 Part 2" + tF(SensorBoost.Day9Part2));
 console.log("Day 10 Part 1" + tF(MonitoringStation.Day10Part1));
+console.log("Day 10 Part 2" + tF(MonitoringStation.Day10Part2));
 
 console.log();
