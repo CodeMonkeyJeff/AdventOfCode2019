@@ -44,5 +44,6 @@ console.log("Day  9 Part 2" + tF(SensorBoost.Day9Part2));
 console.log("Day 10 Part 1" + tF(MonitoringStation.Day10Part1));
 console.log("Day 10 Part 2" + tF(MonitoringStation.Day10Part2));
 console.log("Day 11 Part 1" + tF(HullPaintingRobot.Day11Part1));
+console.log("Day 11 Part 2" + tF(HullPaintingRobot.Day11Part2));
 
 console.log();

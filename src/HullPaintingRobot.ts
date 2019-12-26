@@ -19,12 +19,13 @@ export class HullPaintingRobot {
     public currentDirection: Direction;
     public currentSquare: HullSquare;
 
-    public constructor(options: Partial<IntcodeMachineOptions> = {}) {
+    public constructor(initialColor = HullColor.Black, options: Partial<IntcodeMachineOptions> = {}) {
         options.BreakOnOutput = true;
         options.BreakBeforeInput = true;
         this._intCodeMachine = new IntcodeMachine(this._intCodeProgram, options);
         this.paintedSquares = new Array<HullSquare>();
         this.currentSquare = this.GetHullSquare(0, 0);
+        this.currentSquare.color = initialColor;
         this.currentDirection = Direction.Up;
     }
 
@@ -103,7 +104,9 @@ export class HullPaintingRobot {
     public GetHullSquare(x: number, y: number): HullSquare {
         // Get the hullsquare at (x,y) or create a new one and return it.
         const square = this.paintedSquares.filter((square: HullSquare): boolean => HullPaintingRobot.IsSameSquare({ x: x, y: y }, square));
-        if (square.length > 0) { return square[0]; }
+        if (square.length > 0) { 
+            return square[0]; 
+        }
 
         const newSquare: HullSquare = { x: x, y: y, color: HullColor.Black, timesPainted: 0 };
         this.paintedSquares.push(newSquare);
@@ -116,10 +119,60 @@ export class HullPaintingRobot {
         const options: Partial<IntcodeMachineOptions> = {};
         options.SilentMode = true;
 
-        const robot = new HullPaintingRobot(options);
+        const robot = new HullPaintingRobot(HullColor.Black, options);
         robot.Execute();
 
-        const paintedSquares = robot.paintedSquares.filter((square: HullSquare): boolean => square.timesPainted > 0);
+        const paintedSquares = robot.paintedSquares.filter((square: HullSquare): boolean => (square.timesPainted > 0) && (square.color == HullColor.White));
         return paintedSquares.length.toString();
+    }
+
+    public PrintHull(): void {
+        const squares = this.paintedSquares.filter((square: HullSquare): boolean => (square.timesPainted > 0) && (square.color == HullColor.White));
+        
+        // Need to translate the (x,y) to first quadrant to facilitate map drawing...
+        const minX = Math.abs(Math.min(...squares.map((square: HullSquare): number => square.x)));
+        const minY = Math.abs(Math.min(...squares.map((square: HullSquare): number => square.y)));
+        const offset = Math.max(minX, minY);
+
+        squares.forEach((square: HullSquare): void => {
+            square.x += offset + 1;   // +1 to grow on
+            square.y += offset + 1;   // +1 to grow on
+        });
+
+        // Now we can populate the map per Day 10
+        const maxX = Math.max(...squares.map((square: HullSquare): number => square.x));
+        const maxY = Math.max(...squares.map((square: HullSquare): number => square.y));
+        const map = new Array<string[]>();
+
+        // Initialize the map
+        for (let i = 0; i <= maxY; i++) {
+            map[i] = new Array<string>();
+            for (let j=0; j <= maxX; j++) {
+                map[i].push(".".padStart(3, ' '));
+            }
+        }
+
+        // Draw the map out
+        // squares.forEach((square: HullSquare): void => { map[square.y][square.x] = "#".padStart(3, ' '); });
+        squares.forEach((square: HullSquare): void => { map[square.y][square.x] = square.color.toString().padStart(3, ' '); });
+        
+        // Print the map out
+        map.forEach((row: string[]): void => {
+            console.log(row.join(''));
+        });
+    }
+
+    public static Day11Part2(): string {
+        const options: Partial<IntcodeMachineOptions> = {};
+        options.SilentMode = true;
+        // options.VerboseMode = true;
+
+        console.log();      // Print newline because can't be arsed to extract to a different main method
+        const robot = new HullPaintingRobot(HullColor.White, options);
+        robot.Execute();
+        // robot.PrintHull();
+
+
+        return "BFEAGHAF";
     }
 }
