@@ -5,6 +5,7 @@ export type IntcodeMachineOptions = {
     VerboseMode: boolean;
     SilentMode: boolean;
     BreakOnOutput: boolean;
+    BreakBeforeInput: boolean;
 }
 
 export type Point = {

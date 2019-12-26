@@ -8,6 +8,7 @@ export class IntcodeMachine {
     public InputValues: bigint[];
     public readonly OutputValues: bigint[];
     public readonly BreakOnOutput: boolean;
+    public readonly BreakBeforeInput: boolean;
 
     private _instructionPointer: number;
     private readonly _initialTape: bigint[];
@@ -24,11 +25,13 @@ export class IntcodeMachine {
             VerboseMode: false,
             SilentMode: false,
             BreakOnOutput: false,
+            BreakBeforeInput: false,
         }, options);
 
         this.InputValues = this._options.InputValues;
         this.OutputValues = new Array<bigint>();
         this.BreakOnOutput = this._options.BreakOnOutput;
+        this.BreakBeforeInput = this._options.BreakBeforeInput;
     }
 
     public get CurrentInstruction(): number { return Number(this.Tape[this._instructionPointer] % 100n); }
@@ -93,17 +96,17 @@ export class IntcodeMachine {
 
         switch (mode) {            
             case ParameterMode.Position:
-                this.WriteVerbose("&" + Number(this.Tape[addr]).toString(), false);
+                this.WriteVerbose(("&" + Number(this.Tape[addr]).toString()).padStart(5, ' '), false);
                 this.ExtendTape(Number(this.Tape[addr]));
                 return isDestination ? this.Tape[addr] : this.Tape[Number(this.Tape[addr])];
                 break;
             case ParameterMode.Immediate:
-                this.WriteVerbose("#" + this.Tape[addr].toString(), false);
+                this.WriteVerbose(("#" + this.Tape[addr].toString()).padStart(5, ' '), false);
                 this.ExtendTape(Number(addr));
                 return this.Tape[addr];
                 break;
             case ParameterMode.Relative:
-                this.WriteVerbose(this.Tape[addr].toString() + ", " + this._relativeBase.toString(), false);
+                this.WriteVerbose((this.Tape[addr].toString() + ", " + this._relativeBase.toString()).padStart(5, ' '), false);
                 this.ExtendTape(Number(this.Tape[addr]) + this._relativeBase);
                 return isDestination ? this.Tape[addr] + BigInt(this._relativeBase) : this.Tape[Number(this.Tape[addr]) + this._relativeBase];
                 break;
@@ -114,7 +117,7 @@ export class IntcodeMachine {
     }
 
     private ExtendTape (destination: number): void {
-        if (this.Tape.length < destination) {            
+        if (this.Tape.length < destination + 1) {            
             const extArray: bigint[] = new Array(destination - this.Tape.length + 1).fill(0n);
             this.Tape.push(...extArray);
         }
@@ -155,17 +158,21 @@ export class IntcodeMachine {
     }
 
     private INP(): IntcodeMachine {
-        this.CheckOpcodeCall(Opcode.INP);
-        this.WriteVerbose("INP");
+        this.CheckOpcodeCall(Opcode.INP);        
 
         // Spec says to take this from the command line, but ain't nobody got time for that.
-        if (this.InputValues.length == 0) { throw new Error("Did not specify an input value!"); }
+        if (this.InputValues.length == 0) { 
+            if (this.BreakBeforeInput) { return null; }
+            throw new Error("Did not specify an input value!"); 
+        }
+
+        this.WriteVerbose("INP");
 
         const input = this.InputValues.shift();        
         const destination = Number(this.GetParameters(1, true));
         this.Tape[destination] = input;
 
-        if (this._options.VerboseMode) { process.stdout.write(" <== #" + input); }
+        if (this._options.VerboseMode) { process.stdout.write((" <== #" + input.toString()).padStart(20, ' ')); }
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
         return this;
@@ -173,15 +180,15 @@ export class IntcodeMachine {
 
     private OUT(): IntcodeMachine {
         this.CheckOpcodeCall(Opcode.OUT);
-        if (this._options.VerboseMode) { process.stdout.write(this._instructionPointer.toString().padStart(2) + " OUT "); }
+        this.WriteVerbose("OUT");
         const value = this.GetParameters(1);
 
         this.OutputValues.push(value);       // For easy retrieval later
-        if (!this._options.SilentMode) { console.log(" ==> #" + value.toString()); }
+        if (!this._options.SilentMode) { console.log((" ==> #" + value.toString()).padStart(20, ' ')); }
         if (this._options.VerboseMode) { console.log(); }
         this._instructionPointer += 2;
 
-        if (this._options.BreakOnOutput) { return null; } else { return this; }
+        if (this.BreakOnOutput) { return null; } else { return this; }
     }
 
     private JIT(): IntcodeMachine {

@@ -11,6 +11,7 @@ import { AmplificationCircuit } from "./AmplificationCircuit";
 import { SpaceImageFormat } from "./SpaceImageFormat";
 import { SensorBoost } from "./SensorBoost";
 import { MonitoringStation } from "./MonitoringStation";
+import { HullPaintingRobot } from "./HullPaintingRobot";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -42,5 +43,6 @@ console.log("Day  9 Part 1" + tF(SensorBoost.Day9Part1));
 console.log("Day  9 Part 2" + tF(SensorBoost.Day9Part2));
 console.log("Day 10 Part 1" + tF(MonitoringStation.Day10Part1));
 console.log("Day 10 Part 2" + tF(MonitoringStation.Day10Part2));
+console.log("Day 11 Part 1" + tF(HullPaintingRobot.Day11Part1));
 
 console.log();

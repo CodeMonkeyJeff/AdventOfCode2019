@@ -1,6 +1,6 @@
 "use strict";
 
-import { WireDirection } from "./Enum";
+import { Direction } from "./Enum";
 import { Point } from "./Types";
 
 type WirePoint = { [P in keyof Point]: Point[P]; } & { step: number } // Intesection type to extend Point
@@ -40,16 +40,16 @@ export class CrossedWires {
             for (let i=0; i < endpoint; i++) {
                 step++;
                 switch(val[0]) {
-                    case WireDirection.Down:
+                    case Direction.Down:
                         current.y -= 1;
                         break;
-                    case WireDirection.Up:
+                    case Direction.Up:
                         current.y += 1;
                         break;
-                    case WireDirection.Left:
+                    case Direction.Left:
                         current.x -= 1;
                         break;
-                    case WireDirection.Right:
+                    case Direction.Right:
                         current.x += 1;
                         break;
                 }

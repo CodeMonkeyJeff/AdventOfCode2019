@@ -13,7 +13,7 @@ export enum Opcode {
     BRK = 99
 }
 
-export enum WireDirection {
+export enum Direction {
     Up = "U",
     Down = "D",
     Left = "L",
@@ -24,4 +24,9 @@ export enum ParameterMode {
     Position = 0,
     Immediate = 1,
     Relative = 2
+}
+
+export enum HullColor {
+    Black = 0,
+    White = 1
 }
