@@ -1,9 +1,9 @@
 "use strict";
 
 import { Direction } from "./Enum";
-import { Point } from "./Types";
+import { TwoDPoint } from "./Types";
 
-type WirePoint = { [P in keyof Point]: Point[P]; } & { step: number } // Intesection type to extend Point
+type WirePoint = { [P in keyof TwoDPoint]: TwoDPoint[P]; } & { step: number } // Intesection type to extend Point
 
 export class CrossedWires {
     public readonly WirePath1: string[];
@@ -98,7 +98,7 @@ export class CrossedWires {
         return Math.min(...intersections.map((p: WirePoint): number => p.step));
     }
 
-    public static GetDistance(point1: Point, point2: Point): number { return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); }
+    public static GetDistance(point1: TwoDPoint, point2: TwoDPoint): number { return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); }
 
     private static IsValidWirePath(path: string[]): boolean  {
         let isValid = true;

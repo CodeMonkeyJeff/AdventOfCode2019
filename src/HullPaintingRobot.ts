@@ -1,11 +1,11 @@
 "use strict";
 
 import { IntcodeMachine } from "./IntCodeMachine";
-import { Point, IntcodeMachineOptions } from "./Types";
+import { TwoDPoint, IntcodeMachineOptions } from "./Types";
 import { HullColor, Direction, Opcode } from "./Enum";
 
 type HullSquare = {
-    [P in keyof Point]: Point[P];
+    [P in keyof TwoDPoint]: TwoDPoint[P];
 } & {
     color: HullColor;
     timesPainted: number;
@@ -113,7 +113,7 @@ export class HullPaintingRobot {
         return newSquare;
     }
 
-    private static IsSameSquare(first: Point, second: Point): boolean { return (first.x == second.x) && (first.y == second.y); }
+    private static IsSameSquare(first: TwoDPoint, second: TwoDPoint): boolean { return (first.x == second.x) && (first.y == second.y); }
 
     public static Day11Part1(): string {
         const options: Partial<IntcodeMachineOptions> = {};

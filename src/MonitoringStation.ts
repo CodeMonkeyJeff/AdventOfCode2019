@@ -1,10 +1,10 @@
 "use strict";
 
 // import { Point } from "./Interface";
-import { Point } from "./Types";
+import { TwoDPoint } from "./Types";
 
 type Asteroid = {
-    [P in keyof Point]: Point[P];
+    [P in keyof TwoDPoint]: TwoDPoint[P];
 } & {} 
 
 export class MonitoringStation {
@@ -15,7 +15,7 @@ export class MonitoringStation {
 
     public GetViewableAsteroids(asteroid: Asteroid): Asteroid[] {
         let potentialNeighbors = Array.from(this._asteroids).filter((neighbor: Asteroid): boolean => !MonitoringStation.IsSameAsteroid(asteroid, neighbor));
-        const viewableAsteroids = new Array<Point>();
+        const viewableAsteroids = new Array<TwoDPoint>();
 
         // Until the list of neighbors is empty, we still have work to do
         while (potentialNeighbors.length > 0) {
@@ -39,7 +39,7 @@ export class MonitoringStation {
             });
 
             // Good ol' Euclidean metric
-            const distance = (second: Point): number => {
+            const distance = (second: TwoDPoint): number => {
                 const dx = (second.x - asteroid.x) * (second.x - asteroid.x);
                 const dy = (second.y - asteroid.y) * (second.y - asteroid.y);
                 return Math.sqrt(dx + dy);
