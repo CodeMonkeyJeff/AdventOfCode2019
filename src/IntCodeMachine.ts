@@ -7,7 +7,9 @@ export class IntcodeMachine {
     public Tape: bigint[];
     public InputValues: bigint[];
     public readonly OutputValues: bigint[];
-    public readonly BreakOnOutput: boolean;
+    // public readonly BreakOnOutput: boolean;
+    public get BreakOnOutput(): boolean { return this._options.BreakOnOutput; }
+    public set BreakOnOutput(setting: boolean) { this._options.BreakOnOutput = setting; }
     public readonly BreakBeforeInput: boolean;
 
     private _instructionPointer: number;

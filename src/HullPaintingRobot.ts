@@ -153,7 +153,6 @@ export class HullPaintingRobot {
         }
 
         // Draw the map out
-        // squares.forEach((square: HullSquare): void => { map[square.y][square.x] = "#".padStart(3, ' '); });
         squares.forEach((square: HullSquare): void => { map[square.y][square.x] = square.color.toString().padStart(3, ' '); });
         
         // Print the map out
@@ -165,12 +164,10 @@ export class HullPaintingRobot {
     public static Day11Part2(): string {
         const options: Partial<IntcodeMachineOptions> = {};
         options.SilentMode = true;
-        // options.VerboseMode = true;
 
         console.log();      // Print newline because can't be arsed to extract to a different main method
         const robot = new HullPaintingRobot(HullColor.White, options);
         robot.Execute();
-        // robot.PrintHull();
 
 
         return "BFEAGHAF";

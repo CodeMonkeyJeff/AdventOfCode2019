@@ -34,60 +34,6 @@ export class NBody {
         return [...position, ...velocity];
     }
 
-    // private AdjustX(): NBody {
-    //     const adjustment = new Array<number>(this.Moons.length).fill(0);
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         const neighbors = this.Moons.filter((other: Moon): boolean => !NBody.IsSameMoon(other, moon));
-    //         adjustment[index] = neighbors.reduce((total: number, current: Moon): number => { 
-    //             total += NBody.compare(moon.position.x, current.position.x);
-    //             return total;
-    //         }, 0);
-    //     });
-
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         moon.velocity.x += adjustment[index];
-    //         moon.position.x += moon.velocity.x;
-    //     });
-
-    //     return this;
-    // }
-
-    // private AdjustY(): NBody {
-    //     const adjustment = new Array<number>(this.Moons.length).fill(0);
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         const neighbors = this.Moons.filter((other: Moon): boolean => !NBody.IsSameMoon(other, moon));
-    //         adjustment[index] = neighbors.reduce((total: number, current: Moon): number => { 
-    //             total += NBody.compare(moon.position.y, current.position.y); 
-    //             return total;
-    //         }, 0);
-    //     });
-
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         moon.velocity.y += adjustment[index];
-    //         moon.position.y += moon.velocity.y;
-    //     });
-
-    //     return this;
-    // }
-
-    // private AdjustZ(): NBody {
-    //     const adjustment = new Array<number>(this.Moons.length).fill(0);
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         const neighbors = this.Moons.filter((other: Moon): boolean => !NBody.IsSameMoon(other, moon));
-    //         adjustment[index] = neighbors.reduce((total: number, current: Moon): number => { 
-    //             total += NBody.compare(moon.position.z, current.position.z); 
-    //             return total;
-    //         }, 0);
-    //     });
-
-    //     this.Moons.forEach((moon: Moon, index: number): void => {
-    //         moon.velocity.z += adjustment[index];
-    //         moon.position.z += moon.velocity.z;
-    //     });
-
-    //     return this;
-    // }
-
     private static compare = (first: number, second: number): number => {
         if (first < second) { return 1; }
         if (first > second) { return -1; }
@@ -138,7 +84,7 @@ export class NBody {
         return { position: newPosition, velocity: newVelocity };
     }
 
-    private static IsSameMoon(first: Moon, second: Moon): boolean { return (first.position.x == second.position.x) && (first.position.y == second.position.y) && (first.position.z == second.position.z); }
+    // private static IsSameMoon(first: Moon, second: Moon): boolean { return (first.position.x == second.position.x) && (first.position.y == second.position.y) && (first.position.z == second.position.z); }
 
     public static Day12Part1(): string {
         const createThreeDPoint = (x: number, y: number, z: number): ThreeDPoint => { return { x: x, y: y, z: z } };

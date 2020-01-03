@@ -13,6 +13,7 @@ import { SensorBoost } from "./SensorBoost";
 import { MonitoringStation } from "./MonitoringStation";
 import { HullPaintingRobot } from "./HullPaintingRobot";
 import { NBody } from "./NBody";
+import { ArcadeCabinet } from "./ArcadeCabinet";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -48,5 +49,6 @@ console.log("Day 11 Part 1" + tF(HullPaintingRobot.Day11Part1));
 console.log("Day 11 Part 2" + tF(HullPaintingRobot.Day11Part2));
 console.log("Day 12 Part 1" + tF(NBody.Day12Part1));
 console.log("Day 12 Part 1" + tF(NBody.Day12Part2));
+console.log("Day 13 Part 1" + tF(ArcadeCabinet.Day13Part1));
 
 console.log();
