@@ -50,5 +50,6 @@ console.log("Day 11 Part 2" + tF(HullPaintingRobot.Day11Part2));
 console.log("Day 12 Part 1" + tF(NBody.Day12Part1));
 console.log("Day 12 Part 1" + tF(NBody.Day12Part2));
 console.log("Day 13 Part 1" + tF(ArcadeCabinet.Day13Part1));
+console.log("Day 13 Part 2" + tF(ArcadeCabinet.Day13Part2));
 
 console.log();
