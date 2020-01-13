@@ -53,5 +53,6 @@ console.log("Day 12 Part 1" + tF(NBody.Day12Part2));
 console.log("Day 13 Part 1" + tF(ArcadeCabinet.Day13Part1));
 console.log("Day 13 Part 2" + tF(ArcadeCabinet.Day13Part2));
 console.log("Day 14 Part 1" + tF(SpaceStoichiometry.Day14Part1));
+console.log("Day 14 Part 2" + tF(SpaceStoichiometry.Day14Part2));
 
 console.log();

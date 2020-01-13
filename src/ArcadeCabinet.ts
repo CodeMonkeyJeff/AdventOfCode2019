@@ -94,7 +94,7 @@ export class ArcadeCabinet {
     }
 
     public ShowScreen(): ArcadeCabinet {
-        const maxX = this._state.map((tile: ArcadeCabinetTile): number => tile.x).reduce((max: number, tileX: number): number => tileX > max ? tileX : max);
+        // const maxX = this._state.map((tile: ArcadeCabinetTile): number => tile.x).reduce((max: number, tileX: number): number => tileX > max ? tileX : max);
         const maxY = this._state.map((tile: ArcadeCabinetTile): number => tile.y).reduce((max: number, tileY: number): number => tileY > max ? tileY : max);
 
         const getBlockTile = (tileId: ArcadeCabinetTileId): string => {

@@ -12,14 +12,30 @@ data.push(["171 ORE => 8 CNZTR","7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZ
 
 
 describe("Day 14 -- SpaceStoichiometry", function() {
+    describe("CreateReactant", function() {
+        const tests = [
+            { name: "ORE", quantity: 171, result: { name: "ORE", quantity: 171 } },
+            { name: "CNZTR", quantity: 8, result: { name: "CNZTR", quantity: 8 } },
+            { name: "ZLQW", quantity: 7, result: { name: "ZLQW", quantity: 7 } },
+            { name: "BMBT", quantity: 3, result: { name: "BMBT", quantity: 3} }
+        ];
+
+        tests.forEach((test): void => {
+            it(test.name, function() {
+                const result = SpaceStoichiometry.CreateReactant(test.name, test.quantity);
+                assert.deepEqual(result, test.result);
+            });
+        });
+    });
+
     describe("ParseReactant", function() {
         const tests = [
-            { data: "171 ORE", result: { name: "ORE", quantity: 171 } },
-            { data: "8 CNZTR", result: { name: "CNZTR", quantity: 8 } },
-            { data: "7 ZLQW", result: { name: "ZLQW", quantity: 7 } },
-            { data: "3 BMBT", result: { name: "BMBT", quantity: 3 } },
-            { data: "9 XCVML", result: { name: "XCVML", quantity: 9 } },
-            { data: "26 XMNCP", result: { name: "XMNCP", quantity: 26 } }
+            { data: "171 ORE", result: SpaceStoichiometry.CreateReactant("ORE", 171) },
+            { data: "8 CNZTR", result: SpaceStoichiometry.CreateReactant("CNZTR", 8)},
+            { data: "7 ZLQW", result: SpaceStoichiometry.CreateReactant("ZLQW", 7) },
+            { data: "3 BMBT", result: SpaceStoichiometry.CreateReactant("BMBT", 3) },
+            { data: "9 XCVML", result: SpaceStoichiometry.CreateReactant("XCVML", 9) },
+            { data: "26 XMNCP", result: SpaceStoichiometry.CreateReactant("XMNCP", 26) }
         ];
 
         tests.forEach((test): void => {
@@ -32,9 +48,20 @@ describe("Day 14 -- SpaceStoichiometry", function() {
 
     describe("ParseInput", function() {
         const tests = [
-            { data: "171 ORE", result: [{ name: "ORE", quantity: 171 }] },
-            { data: "7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP", result: [{ name: "ZLQW", quantity: 7 }, { name: "BMBT", quantity: 3 }, { name: "XCVML", quantity: 9 }, { name: "XMNCP", quantity: 26 }, { name: "WPTQ", quantity: 1 }, { name: "MZWV", quantity: 2 }, { name: "RJRHP", quantity: 1 }] },
-            { data: "4 BHXH, 14 VRPVC", result: [{ name: "BHXH", quantity: 4 }, { name: "VRPVC", quantity: 14 }] }
+            { data: "171 ORE", result: [SpaceStoichiometry.CreateReactant("ORE", 171)]},
+            { data: "7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP", result: [
+                SpaceStoichiometry.CreateReactant("ZLQW", 7),
+                SpaceStoichiometry.CreateReactant("BMBT", 3),
+                SpaceStoichiometry.CreateReactant("XCVML", 9),
+                SpaceStoichiometry.CreateReactant("XMNCP", 26),
+                SpaceStoichiometry.CreateReactant("WPTQ", 1),
+                SpaceStoichiometry.CreateReactant("MZWV", 2),
+                SpaceStoichiometry.CreateReactant("RJRHP", 1)
+            ] },
+            { data: "4 BHXH, 14 VRPVC", result: [
+                SpaceStoichiometry.CreateReactant("BHXH", 4),
+                SpaceStoichiometry.CreateReactant("VRPVC", 14),
+            ] }
         ];
 
         tests.forEach((test): void => {
@@ -47,8 +74,8 @@ describe("Day 14 -- SpaceStoichiometry", function() {
 
     describe("ParseRecipe", function() {
         const tests = [
-            { data: "10 ORE => 10 A", result: { input: [{ name: "ORE", quantity: 10 }], output: { name: "A", quantity: 10 } } },
-            { data: "7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL", result: { input: [{ name: "ZLQW", quantity: 7 }, { name: "BMBT", quantity: 3 }, { name: "XCVML", quantity: 9 }, { name: "XMNCP", quantity: 26 }, { name: "WPTQ", quantity: 1 }, { name: "MZWV", quantity: 2 }, { name: "RJRHP", quantity: 1 }], output: { name: "PLWSL", quantity: 4 } } }
+            { data: "10 ORE => 10 A", result: { input: [SpaceStoichiometry.CreateReactant("ORE", 10)], output: SpaceStoichiometry.CreateReactant("A", 10)} },
+            { data: "7 ZLQW, 3 BMBT, 9 XCVML, 26 XMNCP, 1 WPTQ, 2 MZWV, 1 RJRHP => 4 PLWSL", result: { input: [SpaceStoichiometry.CreateReactant("ZLQW", 7), SpaceStoichiometry.CreateReactant("BMBT", 3), SpaceStoichiometry.CreateReactant("XCVML", 9), SpaceStoichiometry.CreateReactant("XMNCP", 26), SpaceStoichiometry.CreateReactant("WPTQ", 1), SpaceStoichiometry.CreateReactant("MZWV", 2), SpaceStoichiometry.CreateReactant("RJRHP", 1)], output: SpaceStoichiometry.CreateReactant("PLWSL", 4) } }
         ];
 
         tests.forEach((test): void => {
@@ -59,7 +86,7 @@ describe("Day 14 -- SpaceStoichiometry", function() {
         });
     });
 
-    describe("ExtractCost", function() {
+    describe("ExtractOrePerFuelCost", function() {
         const tests = [
             { data: data[0], result: 31 },
             { data: data[1], result: 165 },
@@ -71,7 +98,23 @@ describe("Day 14 -- SpaceStoichiometry", function() {
         tests.forEach((test, index): void => {
             it("Test " + index, function() {
                 const stochiometry = new SpaceStoichiometry(test.data);
-                const result = stochiometry.ExtractCost();
+                const result = stochiometry.CalculateOrePerFuelCost();
+                assert.equal(result, test.result);
+            });
+        });
+    });
+
+    describe("CalculateFuelPerTrillionOre", function() {
+        const tests = [
+            { data: data[2], result: 82892753 },
+            { data: data[3], result: 5586022 },
+            { data: data[4], result: 460664 },
+        ];
+
+        tests.forEach((test, index): void => {
+            it("Test " + index, function() {
+                const stochiometry = new SpaceStoichiometry(test.data);
+                const result = stochiometry.CalculateFuelPerTrillionOre();
                 assert.equal(result, test.result);
             });
         });
