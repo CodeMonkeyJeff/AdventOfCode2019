@@ -140,8 +140,8 @@ export class OxygenSystem {
                 break;
         }
 
-        if ((newPosition.x == 0) && (newPosition.y == 0)) { newPosition.data = MapData.Initial; }
         if (mapData != MapData.Wall) {
+            if (OxygenSystem.isSamePosition(newPosition, this.Origin)) { newPosition.data = MapData.Initial; }
             if (mapData == MapData.OxygenStation) { this.OxygenStationPosition = newPosition; }
 
             this.AddNeighbor(this.DroidPosition, newPosition, input);
@@ -173,7 +173,21 @@ export class OxygenSystem {
         return false;
     }
 
-    public MoveToPosition(position: Position): void {
+    public MoveToPosition(position: Position): OxygenSystem {
+        //* If the target position is a neighbor of the current position, we can move directly there..
+        const possibleNeighbor = this.getPositionFromList(this.DroidPosition.neighbors, position.x, position.y);
+        if (possibleNeighbor.length > 0) {
+            const dx = this.DroidPosition.x - possibleNeighbor[0].x;   // +1 -> W, -1 -> E
+            const dy = this.DroidPosition.y - possibleNeighbor[0].y;   // +1 -> N, -1 => S
+
+            if (dx == 1) { this.MoveDroid(MovementCommand.West); }
+            if (dx == -1) { this.MoveDroid(MovementCommand.East); }
+            if (dy == 1) { this.MoveDroid(MovementCommand.North); }
+            if (dy == -1) { this.MoveDroid(MovementCommand.South); }
+
+            return this;
+        }
+
         //* Moving back to origin (don't do anything if already at origin!)
         if (!OxygenSystem.isSamePosition(this.Origin, this.DroidPosition)) {
             const toOrigin = this._directionsToOrigin[OxygenSystem.pointToString(this.DroidPosition.x, this.DroidPosition.y)].slice();  // slice() will return a new array
@@ -183,7 +197,7 @@ export class OxygenSystem {
             }
         }
         // Error checking that we got back to the origin
-        if (!OxygenSystem.isSamePosition(this.getPosition(0, 0), this.DroidPosition)) { throw new Error("Directions didn't take us back to origin.."); }
+        if (!OxygenSystem.isSamePosition(this.Origin, this.DroidPosition)) { throw new Error("Directions didn't take us back to origin.."); }
 
         //* Move from origin to position (don't do anything if position is origin!)
         if (!OxygenSystem.isSamePosition(this.Origin, position)) {
@@ -194,8 +208,8 @@ export class OxygenSystem {
             }
         }
         // Error checking that we got to where we are going
-        if (!OxygenSystem.isSamePosition(this.getPosition(position.x, position.y), this.DroidPosition)) { throw new Error("Directions didn't take us to desired position.."); }
-
+        if (!OxygenSystem.isSamePosition(position, this.DroidPosition)) { throw new Error("Directions didn't take us to desired position.."); }
+        return this;
     }
 
     public BuildMap(runInteractive = false, stopWhenOxygenStationFound = true): OxygenSystem {
@@ -212,43 +226,40 @@ export class OxygenSystem {
         // Create nodes for every cardinal direction.  This will also create a list of adjacent nodes
         const exploreNeighbors = (): void => {
             const neighbors = createNeighbors(this.DroidPosition);
-            neighbors.forEach((neighbor: Position): void => {
-                const dx = this.DroidPosition.x - neighbor.x;   // +1 -> W, -1 -> E
-                const dy = this.DroidPosition.y - neighbor.y;   // +1 -> S, -1 => N
 
-                if (dx == 1) {
-                    const droidMoved = this.MoveDroid(MovementCommand.West);
-                    if (droidMoved) { this.MoveDroid(MovementCommand.East); }
-                }
+            neighbors
+                .filter(p => p.data == MapData.Unknown)
+                .forEach((neighbor: Position): void => {
+                    const dx = this.DroidPosition.x - neighbor.x;   // +1 -> W, -1 -> E
+                    const dy = this.DroidPosition.y - neighbor.y;   // +1 -> S, -1 => N
 
-                if (dx == -1) {
-                    const droidMoved = this.MoveDroid(MovementCommand.East);
-                    if (droidMoved) { this.MoveDroid(MovementCommand.West); }
-                }
+                    if (dx == 1) {
+                        const droidMoved = this.MoveDroid(MovementCommand.West);
+                        if (droidMoved) { this.MoveDroid(MovementCommand.East); }
+                    }
 
-                if (dy == 1) {
-                    const droidMoved = this.MoveDroid(MovementCommand.North);
-                    if (droidMoved) { this.MoveDroid(MovementCommand.South); }
-                    // const droidMoved = this.MoveDroid(MovementCommand.South);
-                    // if (droidMoved) { this.MoveDroid(MovementCommand.North); }
-                }
+                    if (dx == -1) {
+                        const droidMoved = this.MoveDroid(MovementCommand.East);
+                        if (droidMoved) { this.MoveDroid(MovementCommand.West); }
+                    }
 
-                if (dy == -1) {
-                    const droidMoved = this.MoveDroid(MovementCommand.South);
-                    if (droidMoved) { this.MoveDroid(MovementCommand.North); }
-                    // const droidMoved = this.MoveDroid(MovementCommand.North);
-                    // if (droidMoved) { this.MoveDroid(MovementCommand.South); }
-                }
-            });
+                    if (dy == 1) {
+                        const droidMoved = this.MoveDroid(MovementCommand.North);
+                        if (droidMoved) { this.MoveDroid(MovementCommand.South); }
+                    }
+
+                    if (dy == -1) {
+                        const droidMoved = this.MoveDroid(MovementCommand.South);
+                        if (droidMoved) { this.MoveDroid(MovementCommand.North); }
+                    }
+                });
 
             if (runInteractive) { this.PrintMap(); readline.question("Current position is " + OxygenSystem.pointToString(this.DroidPosition.x, this.DroidPosition.y)); }
         }
 
         const isDiscovered = (position: Position, discovered: Position[]): boolean => this.getPositionFromList(discovered, position.x, position.y).length > 0;
+        
         //* Implementing an iterative DFS starting at (0,0)
-        //*     *  p.neighbors will never be empty (or it would be surrounded by 4 walls..)
-        //*
-
         const toExplore: Position[] = new Array<Position>();
         const discovered: Position[] = new Array<Position>();
 
@@ -256,9 +267,8 @@ export class OxygenSystem {
         while (toExplore.length > 0) {
             const p = toExplore.pop();
             if (!isDiscovered(p, discovered)) {
-                this.MoveToPosition(p);
-                exploreNeighbors(); // Around p
-
+                this.MoveToPosition(p); // Average Part1    0.2115ms,   Part2   1.4559ms
+                exploreNeighbors();     // Average          0.214 ms
                 discovered.push(p);
                 const undiscoveredNeighbors = p.neighbors.filter((neighbor: Position): boolean => !isDiscovered(neighbor, discovered));
                 toExplore.push(...undiscoveredNeighbors);
@@ -266,7 +276,6 @@ export class OxygenSystem {
                 if (stopWhenOxygenStationFound && (this.OxygenStationPosition != null)) { break; }
             }
         }
-
         return this;
     }
 
