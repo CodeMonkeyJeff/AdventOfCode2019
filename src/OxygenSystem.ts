@@ -31,6 +31,7 @@ export class OxygenSystem {
     private readonly _map: Position[];              // Centered on robit
     private readonly _distances: { [position: string]: number };
     private readonly _directionsToOrigin: { [position: string]: MovementCommand[] };
+    private readonly _treeLevelToOxygenStation: { [level: string]: number };
 
     public readonly RepairDroid: IntcodeMachine;
     public readonly Origin: Position;
@@ -70,13 +71,16 @@ export class OxygenSystem {
     private getDistance(position: Position): number { return this._distances[OxygenSystem.pointToString(position.x, position.y)]; }
     private setDistance(position: Position, distance: number): void { this._distances[OxygenSystem.pointToString(position.x, position.y)] = distance; }
 
+    private getTreeLevel(position: Position): number { return this._treeLevelToOxygenStation[OxygenSystem.pointToString(position.x, position.y)]; }
+    private setTreeLevel(position: Position, level: number): void { this._treeLevelToOxygenStation[OxygenSystem.pointToString(position.x, position.y)] = level; }
+
     private getCharacter(position: Position): string {
         let character = " ";
         const mapData = position.data;
 
-        switch(mapData) {
+        switch (mapData) {
             case MapData.Empty:
-                character =  ".";
+                character = ".";
                 break;
             case MapData.Initial:
                 character = "I";
@@ -85,10 +89,10 @@ export class OxygenSystem {
                 character = "O";
                 break;
             case MapData.Unknown:
-                character =  "?";
+                character = "?";
                 break;
             case MapData.Wall:
-                character =  "#";
+                character = "#";
                 break;
         }
 
@@ -102,6 +106,7 @@ export class OxygenSystem {
         this._map = new Array<Position>();
         this._distances = {};
         this._directionsToOrigin = {};
+        this._treeLevelToOxygenStation = {};
 
         const options: Partial<IntcodeMachineOptions> = { BreakBeforeInput: true, BreakOnOutput: true, SilentMode: true };
         this.RepairDroid = new IntcodeMachine(this._intcode, options);
@@ -193,7 +198,7 @@ export class OxygenSystem {
 
     }
 
-    public BuildMap(runInteractive = false): OxygenSystem {
+    public BuildMap(runInteractive = false, stopWhenOxygenStationFound = true): OxygenSystem {
         // Create four nodes, one in each cardinal direction .. if they don't already exist..
         const createNeighbors = (current: Position): Position[] => {
             const neighbors = new Array<Position>();
@@ -205,12 +210,12 @@ export class OxygenSystem {
         };
 
         // Create nodes for every cardinal direction.  This will also create a list of adjacent nodes
-        const exploreNeighbors = (): void =>  {
+        const exploreNeighbors = (): void => {
             const neighbors = createNeighbors(this.DroidPosition);
             neighbors.forEach((neighbor: Position): void => {
                 const dx = this.DroidPosition.x - neighbor.x;   // +1 -> W, -1 -> E
                 const dy = this.DroidPosition.y - neighbor.y;   // +1 -> S, -1 => N
-                
+
                 if (dx == 1) {
                     const droidMoved = this.MoveDroid(MovementCommand.West);
                     if (droidMoved) { this.MoveDroid(MovementCommand.East); }
@@ -247,7 +252,7 @@ export class OxygenSystem {
         const toExplore: Position[] = new Array<Position>();
         const discovered: Position[] = new Array<Position>();
 
-        toExplore.push(this.getPosition(0,0));
+        toExplore.push(this.getPosition(0, 0));
         while (toExplore.length > 0) {
             const p = toExplore.pop();
             if (!isDiscovered(p, discovered)) {
@@ -258,7 +263,7 @@ export class OxygenSystem {
                 const undiscoveredNeighbors = p.neighbors.filter((neighbor: Position): boolean => !isDiscovered(neighbor, discovered));
                 toExplore.push(...undiscoveredNeighbors);
 
-                if (this.OxygenStationPosition != null) { break; }
+                if (stopWhenOxygenStationFound && (this.OxygenStationPosition != null)) { break; }
             }
         }
 
@@ -297,14 +302,14 @@ export class OxygenSystem {
         const maxY = Math.max(10, ...this._map.map((p: Position): number => p.y));
 
         const printOut = new Array<string[]>();
-        for (let i=0; i < maxY - minY + 1; i++) {
+        for (let i = 0; i < maxY - minY + 1; i++) {
             printOut.push(new Array<string>());
-            for (let j=0; j < maxX - minX + 1; j++) {
+            for (let j = 0; j < maxX - minX + 1; j++) {
                 printOut[i].push(" ");
             }
         }
 
-        this._map.forEach((p: Position): void => { printOut[p.y - minY][p.x - minX] = this.getCharacter(p); });        
+        this._map.forEach((p: Position): void => { printOut[p.y - minY][p.x - minX] = this.getCharacter(p); });
         printOut.forEach((row: string[]): void => { console.log(row.join('')); });
     }
 
@@ -324,7 +329,7 @@ export class OxygenSystem {
             const direction = parseInt(input) % 5;
             if (direction != 0) {
                 this.MoveDroid(direction);
-                
+
                 console.log();
                 this.PrintMap();
                 console.log();
@@ -343,6 +348,30 @@ export class OxygenSystem {
             .BuildDistances();
 
         return system.getDistance(system.OxygenStationPosition).toString();
+    }
+
+    public static Day15Part2(): string {
+        const system = new OxygenSystem();
+        system.BuildMap(false, false);
+
+        system._map.filter(p => p.data != MapData.Wall)
+            .forEach((p: Position): void => { system.setTreeLevel(p, Number.MAX_SAFE_INTEGER); });
+        system.setTreeLevel(system.OxygenStationPosition, 0);
+
+        const toSet: Position[] = [system.OxygenStationPosition];
+        while (toSet.length > 0) {
+            const current = toSet.shift();
+            const currentLevel = system.getTreeLevel(current);
+
+            current.neighbors.forEach((neighbor: Position): void => {
+                if (system.getTreeLevel(neighbor) > currentLevel + 1) {
+                    system.setTreeLevel(neighbor, currentLevel + 1);
+                    toSet.push(neighbor);
+                }
+            });
+        }
+        const treeLevels = Object.keys(system._treeLevelToOxygenStation).map(key => system._treeLevelToOxygenStation[key]);
+        return Math.max(...treeLevels).toString();
     }
 
     public static CreatePosition(x: number, y: number, data: MapData): Position { return { x: x, y: y, data: data, neighbors: new Array<Position>() }; }
