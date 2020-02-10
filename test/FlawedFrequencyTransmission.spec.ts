@@ -21,69 +21,33 @@ describe("Day 16 -- FlawedFrequencyTransmission", function(): void {
         });
     });
 
-    describe("GeneratePatterns", function(): void {
+    describe("GetPattern", function(): void {
         const tests = [
-            {length: 3, result:[
-                [1, 0, -1],
-                [0, 1, 1],
-                [0, 0, 1]
-            ]},
-            {length: 4, result:[
-                [1, 0, -1, 0],
-                [0, 1, 1, 0],
-                [0, 0, 1, 1],
-                [0, 0, 0, 1]
-            ]},
-            {length: 8, result:[
-                [1, 0, -1, 0, 1, 0, -1, 0],
-                [0, 1, 1, 0, 0, -1, -1, 0],
-                [0, 0, 1, 1, 1, 0, 0, 0],
-                [0, 0, 0, 1, 1, 1, 1, 0],
-                [0, 0, 0, 0, 1, 1, 1, 1],
-                [0, 0, 0, 0, 0, 1, 1, 1],
-                [0, 0, 0, 0, 0, 0, 1, 1],
-                [0, 0, 0, 0, 0, 0, 0, 1]
-            ]},
-            {length: 32, result: [
-                [1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0, 1, 0, -1, 0],
-                [0, 1, 1, 0, 0, -1, -1, 0, 0, 1, 1, 0, 0, -1, -1, 0, 0, 1, 1, 0, 0, -1, -1, 0, 0, 1, 1, 0, 0, -1, -1, 0],
-                [0, 0, 1, 1, 1, 0, 0, 0, -1, -1, -1, 0, 0, 0, 1, 1, 1, 0, 0, 0, -1, -1, -1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
-                [0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1, -1, -1, -1, 0],
-                [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-                [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-                [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, 0], // 8
-                [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1], // 9
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1], // 10
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 11
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0], // 12
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0], // 13
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0], // 14
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0], // 15
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0], // 16
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 17
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 18
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 19
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 20
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 21
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 22
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 23
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], // 24
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1], // 25
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1], // 26
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1], // 27
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1], // 28
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1], // 29
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1], // 30
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1], // 31
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]  // 32
-            ]}
+            { index: 0, length: 32, result: { positives: [0, 4, 8, 12, 16, 20, 24, 28], negatives: [2, 6, 10, 14, 18, 22, 26, 30] } },
+            { index: 1, length: 32, result: { positives: [1, 2, 9, 10, 17, 18, 25, 26], negatives: [5, 6, 13, 14, 21, 22, 29, 30] } },
+            { index: 2, length: 32, result: { positives: [2, 3, 4, 14, 15, 16, 26, 27, 28], negatives: [8, 9, 10, 20, 21, 22] } },
+            { index: 6, length: 32, result: { positives: [6, 7, 8, 9, 10, 11, 12], negatives: [20, 21, 22, 23, 24, 25, 26] } }
         ];
 
         tests.forEach((test): void => {
-            it(test.length.toString(), function() {
-                const result = FlawedFrequencyTransmission.GeneratePatterns(test.length);
-                assert.deepEqual(result, test.result);
+            it(test.index.toString(), function() {
+                const pattern = FlawedFrequencyTransmission.GetPattern(test.index, test.length);
+                assert.deepEqual(pattern.positives, test.result.positives);
+                assert.deepEqual(pattern.negatives, test.result.negatives);
+            });
+        });
+    });
+
+    describe("RepeatSignal", function(): void {
+        const tests = [
+            { signal: "1234567890", numRepetitions: 10, result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0] }
+        ];
+
+        tests.forEach((test): void => {
+            it(test.numRepetitions.toString(), function() {
+                const partialSignal = FlawedFrequencyTransmission.ConvertInputSignal(test.signal);
+                const signal = FlawedFrequencyTransmission.RepeatSignal(partialSignal,test.numRepetitions);
+                assert.deepEqual(signal, test.result);
             });
         });
     });
@@ -97,27 +61,45 @@ describe("Day 16 -- FlawedFrequencyTransmission", function(): void {
 
         tests.forEach((test): void => {
             it(test.signal.toString(), function(): void {
-                const fft = new FlawedFrequencyTransmission(test.signal);
+                const signal = FlawedFrequencyTransmission.ConvertInputSignal(test.signal);
+                const fft = new FlawedFrequencyTransmission(signal);
                 const result = fft.ExecutePhase();
                 assert.deepEqual(result, test.result);
             });
         });
     });
 
-    describe("ExecuteMultiplePhases", function(): void {
-        const tests = [
-            { signal: "12345678", numPhases: 4, numDigits: 8, result: [0, 1, 0, 2, 9, 4, 9, 8] },
-            { signal: "80871224585914546619083218645595", numPhases: 100, numDigits: 8, result: [2, 4, 1, 7, 6, 1, 7, 6] },
-            { signal: "19617804207202209144916044189917", numPhases: 100, numDigits: 8, result: [7, 3, 7, 4, 5, 4, 1, 8] },
-            { signal: "69317163492948606335995924319873", numPhases: 100, numDigits: 8, result: [5, 2, 4, 3, 2, 1, 3, 3] }
-        ];
+    // describe("ExecuteMultiplePhases", function(): void {
+    //     const tests = [
+    //         { signal: "12345678", numPhases: 4, result: [0, 1, 0, 2, 9, 4, 9, 8] },
+    //         { signal: "80871224585914546619083218645595", numPhases: 100, result: [2, 4, 1, 7, 6, 1, 7, 6] },
+    //         { signal: "19617804207202209144916044189917", numPhases: 100, result: [7, 3, 7, 4, 5, 4, 1, 8] },
+    //         { signal: "69317163492948606335995924319873", numPhases: 100, result: [5, 2, 4, 3, 2, 1, 3, 3] }
+    //     ];
 
-        tests.forEach((test): void => {
-            it(test.signal.toString(), function(): void {
-                const fft = new FlawedFrequencyTransmission(test.signal);
-                const result = fft.ExecuteMultiplePhases(test.numPhases, test.numDigits);
-                assert.deepEqual(result, test.result);
-            });
-        });
-    });
+    //     tests.forEach((test): void => {
+    //         it(test.signal.toString(), function(): void {
+    //             const signal = FlawedFrequencyTransmission.ConvertInputSignal(test.signal);
+    //             const result = FlawedFrequencyTransmission.ExecuteMultiplePhases(signal, test.numPhases).slice(0, 8);
+    //             assert.deepEqual(result, test.result);
+    //         });
+    //     });
+    // });
+
+    // describe("NextAttempt", function(): void {
+    //     const tests = [
+    //         { signal: "03036732577212944063491565474664", result: "84462026", useOffset: true },
+    //         { signal: "02935109699940807407585447034323", result: "78725270", useOffset: true },
+    //         { signal: "03081770884921959731165446850517", result: "53553731", useOffset: true }
+    //     ];
+
+    //     tests.forEach((test): void => {
+    //         it(test.signal.toString(), function(): void {
+    //             const signal = FlawedFrequencyTransmission.ConvertInputSignal(test.signal);
+    //             // const result = FlawedFrequencyTransmission.CalculateOutput(signal);
+    //             const result = FlawedFrequencyTransmission.NextAttempt(signal, test.useOffset);
+    //             assert.equal(result, test.result);
+    //         });
+    //     });
+    // });
 });
