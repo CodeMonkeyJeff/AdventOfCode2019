@@ -1,10 +1,5 @@
 "use strict";
 
-type Pattern = {
-    positives: Array<number>;
-    negatives: Array<number>;
-}
-
 export class FlawedFrequencyTransmission {
     private signal: number[];
 

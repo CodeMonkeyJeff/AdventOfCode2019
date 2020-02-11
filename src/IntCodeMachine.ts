@@ -1,7 +1,15 @@
 "use strict";
 
 import { Opcode, ParameterMode } from "./Enum";
-import { IntcodeMachineOptions } from "./Types";
+// import { IntcodeMachineOptions } from "./Types";
+
+export type IntcodeMachineOptions = {
+    InputValues: bigint[];
+    VerboseMode: boolean;
+    SilentMode: boolean;
+    BreakOnOutput: boolean;
+    BreakBeforeInput: boolean;
+}
 
 export class IntcodeMachine {
     public Tape: bigint[];

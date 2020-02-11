@@ -1,7 +1,7 @@
 "use strict";
 
-import { IntcodeMachine } from "./IntCodeMachine";
-import { TwoDPoint, IntcodeMachineOptions } from "./Types";
+import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
+import { TwoDPoint } from "./Types";
 import { HullColor, Direction, Opcode } from "./Enum";
 
 type HullSquare = {

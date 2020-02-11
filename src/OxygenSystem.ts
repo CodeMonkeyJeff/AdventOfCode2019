@@ -1,7 +1,7 @@
 "use strict";
 
-import { IntcodeMachine } from "./IntCodeMachine";
-import { TwoDPoint, IntcodeMachineOptions } from "./Types";
+import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
+import { TwoDPoint } from "./Types";
 
 import readline = require("readline-sync");
 
