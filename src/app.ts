@@ -17,6 +17,7 @@ import { ArcadeCabinet } from "./ArcadeCabinet";
 import { SpaceStoichiometry } from "./SpaceStoichiometry";
 import { OxygenSystem } from "./OxygenSystem";
 import { FlawedFrequencyTransmission } from "./FlawedFrequencyTransmission";
+import { SetAndForget } from "./SetAndForget";
 
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
@@ -60,5 +61,6 @@ console.log("Day 15 Part 1" + tF(OxygenSystem.Day15Part1));
 console.log("Day 15 Part 2" + tF(OxygenSystem.Day15Part2));
 console.log("Day 16 Part 1" + tF(FlawedFrequencyTransmission.Day16Part1));
 console.log("Day 16 Part 2" + tF(FlawedFrequencyTransmission.Day16Part2));
+console.log("Day 17 Part 1" + tF(SetAndForget.Day17Part1));
 
 console.log();
