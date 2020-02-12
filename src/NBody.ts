@@ -1,13 +1,22 @@
 "use strict";
 
-import { ThreeDPoint, Moon } from "./Types";
+export type Moon = {
+    position: Point;
+    velocity: Point;
+}
+
+export type Point = {
+    x: number;
+    y: number;
+    z: number;
+}
 
 export class NBody {
     public readonly Moons: Moon[];
 
-    public constructor(moons: ThreeDPoint[]) {
+    public constructor(moons: Point[]) {
         this.Moons = new Array<Moon>();
-        moons.forEach((moon: ThreeDPoint): void => { this.Moons.push(NBody.CreateMoonState([moon.x, moon.y, moon.z])); });
+        moons.forEach((moon: Point): void => { this.Moons.push(NBody.CreateMoonState([moon.x, moon.y, moon.z])); });
     }
 
     public ExecuteNSteps(N: number): NBody {
@@ -69,7 +78,7 @@ export class NBody {
     }
 
     public CalculateEnergy(): number {
-        const calcEnergy = (point: ThreeDPoint): number => Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
+        const calcEnergy = (point: Point): number => Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
 
         return this.Moons.reduce((total: number, moon: Moon): number => {
             total += calcEnergy(moon.position) * calcEnergy(moon.velocity);
@@ -87,14 +96,14 @@ export class NBody {
     // private static IsSameMoon(first: Moon, second: Moon): boolean { return (first.position.x == second.position.x) && (first.position.y == second.position.y) && (first.position.z == second.position.z); }
 
     public static Day12Part1(): string {
-        const createThreeDPoint = (x: number, y: number, z: number): ThreeDPoint => { return { x: x, y: y, z: z } };
+        const createThreeDPoint = (x: number, y: number, z: number): Point => { return { x: x, y: y, z: z } };
 
         const input = [
             [-2, 9, -5],
             [16, 19, 9],
             [0, 3, 6],
             [11, 0, 11]
-        ].map((moon: number[]): ThreeDPoint => createThreeDPoint(moon[0], moon[1], moon[2]));
+        ].map((moon: number[]): Point => createThreeDPoint(moon[0], moon[1], moon[2]));
 
         const nbody = new NBody(input);
         const energy = nbody.ExecuteNSteps(1000).CalculateEnergy();
