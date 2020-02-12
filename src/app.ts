@@ -19,14 +19,18 @@ import { OxygenSystem } from "./OxygenSystem";
 import { FlawedFrequencyTransmission } from "./FlawedFrequencyTransmission";
 import { SetAndForget } from "./SetAndForget";
 
+const benchmarks = new Array<number>();
+const totalTime = (): string => "Total Time:  " + benchmarks.reduce((t,c) => t+c).toFixed(3).padStart(50) + " milliseconds";
+
 const tF = (callbackFn: () => string): string => {
     const t0 = performance.now();
     const result = callbackFn();
     const t1 = performance.now();
-    return result.padStart(25) + (t1 - t0).toFixed(3).toString().padStart(25) + " milliseconds";
+    benchmarks.push(t1 - t0);
+    return result.padStart(25) + (t1 - t0).toFixed(3).padStart(25) + " milliseconds";
 }
-console.log();
 
+console.log();
 console.log("Advent of Code 2019");
 console.log("-------------------");
 console.log("Day  1 Part 1" + tF(TyrannyOfRocketEquation.Day1Part1));
@@ -62,5 +66,7 @@ console.log("Day 15 Part 2" + tF(OxygenSystem.Day15Part2));
 console.log("Day 16 Part 1" + tF(FlawedFrequencyTransmission.Day16Part1));
 console.log("Day 16 Part 2" + tF(FlawedFrequencyTransmission.Day16Part2));
 console.log("Day 17 Part 1" + tF(SetAndForget.Day17Part1));
+console.log("Day 17 Part 2" + tF(SetAndForget.Day17Part2));
 
+console.log(totalTime());
 console.log();

@@ -1,11 +1,10 @@
 "use strict";
 
 import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
-import { TwoDPoint } from "./Types";
 
 type Scaffold = {
-    [P in keyof TwoDPoint]: TwoDPoint[P];
-} & {
+    x: number;
+    y: number;
     index: number;
     neighbors: Scaffold[];
 }
@@ -23,20 +22,16 @@ export class SetAndForget {
     //* 2   # # # #
     //* 3   # . # .
 
-    public constructor() {
-        const options: Partial<IntcodeMachineOptions> = {
-            BreakOnOutput: false,
-            SilentMode: true
-        }
-
+    public constructor(options: Partial<IntcodeMachineOptions> = { SilentMode: true }) {
         this._program = new IntcodeMachine(this._code, options);
         this._output = new Array<bigint>();
         this._scaffolds = new Array<Scaffold>();
     }
 
-    public Execute(): SetAndForget {
+    public Execute(runInteractively = false): SetAndForget {
         this._program.ExecuteTape();
-        this._output.push(...this._program.OutputValues);
+        if (runInteractively) { this.ShowGrid(this._program.OutputValues); }
+        if (!runInteractively) { this._output.push(...this._program.OutputValues); }
         return this;
     }
 
@@ -69,8 +64,8 @@ export class SetAndForget {
         return this;
     }
 
-    public ShowGrid(): SetAndForget {
-        console.log(this._output.map(v => String.fromCharCode(Number(v))).join(""));
+    public ShowGrid(output: bigint[] = this._output): SetAndForget {
+        console.log(output.map(v => String.fromCharCode(Number(v))).join(""));
         return this;
     }
 
@@ -82,5 +77,23 @@ export class SetAndForget {
         const result = intersections.map(v => v.x * v.y).reduce((total: number, current: number): number => total + current);
 
         return result.toString();
+    }
+    public static Day17Part2(): string {
+        const parse = (input: string): bigint[] => input.split("").map(v => BigInt(v.charCodeAt(0))).concat(10n);
+
+        const input: bigint[] = [
+            ...parse("A,B,A,C,A,B,C,C,A,B"),        // Main
+            ...parse("R,8,L,10,R,8"),               // A
+            ...parse("R,12,R,8,L,8,L,12"),          // B
+            ...parse("L,12,L,10,L,8"),              // C
+            ...parse("n")                           // Continuous video feed?
+        ];
+        
+        const saf = new SetAndForget();
+        saf._program.Tape[0] = 2n;                  // Forcing the vacuum robot to wake up   
+        saf._program.InputValues.push(...input);
+        saf.Execute();
+
+        return saf._program.OutputValues.pop().toString();
     }
 }
