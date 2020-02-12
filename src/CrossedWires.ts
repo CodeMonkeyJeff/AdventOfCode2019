@@ -1,9 +1,17 @@
 "use strict";
 
-import { Direction } from "./Enum";
-import { TwoDPoint } from "./Types";
+enum Direction {
+    Up = "U",
+    Down = "D",
+    Left = "L",
+    Right = "R"
+}
 
-type WirePoint = { [P in keyof TwoDPoint]: TwoDPoint[P]; } & { step: number } // Intesection type to extend Point
+type WirePoint = { 
+    x: number;
+    y: number;
+    step: number;
+}
 
 export class CrossedWires {
     public readonly WirePath1: string[];
@@ -62,7 +70,7 @@ export class CrossedWires {
     }
 
     public GetIntersectionPoints(): WirePoint[] {
-        const origin = { x: 0, y: 0 };
+        const origin = { x: 0, y: 0, step: 0 };
         const d = {};
         const points: WirePoint[] = new Array<WirePoint>();
 
@@ -88,7 +96,7 @@ export class CrossedWires {
     }
 
     public GetClosestIntersectionDistance(): number {
-        const origin = { x: 0, y: 0 };
+        const origin = { x: 0, y: 0, step: 0 };
         const intersections: WirePoint[] = this.GetIntersectionPoints();
         return Math.min(...intersections.map((p: WirePoint): number => CrossedWires.GetDistance(origin, p)));
     }
@@ -98,7 +106,7 @@ export class CrossedWires {
         return Math.min(...intersections.map((p: WirePoint): number => p.step));
     }
 
-    public static GetDistance(point1: TwoDPoint, point2: TwoDPoint): number { return Math.abs(point1.x - point2.x) + Math.abs(point1.y - point2.y); }
+    public static GetDistance(a: WirePoint, b: WirePoint): number { return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); }
 
     private static IsValidWirePath(path: string[]): boolean  {
         let isValid = true;

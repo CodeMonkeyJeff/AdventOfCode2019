@@ -1,8 +1,6 @@
 "use strict";
 
-import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
-import { Opcode } from "./Enum";
-// import { IntcodeMachineOptions } from "./Types";
+import { IntcodeMachine, IntcodeMachineOptions, Opcode } from "./IntCodeMachine";
 
 export class AmplificationCircuit {
     private readonly _ampCode: bigint[];

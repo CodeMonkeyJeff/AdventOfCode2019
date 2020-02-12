@@ -1,12 +1,22 @@
 "use strict";
 
-import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
-import { TwoDPoint } from "./Types";
-import { HullColor, Direction, Opcode } from "./Enum";
+import { IntcodeMachine, IntcodeMachineOptions, Opcode } from "./IntCodeMachine";
+
+enum HullColor {
+    Black = 0,
+    White = 1
+}
+
+enum Direction {
+    Up = "U",
+    Down = "D",
+    Left = "L",
+    Right = "R"
+}
 
 type HullSquare = {
-    [P in keyof TwoDPoint]: TwoDPoint[P];
-} & {
+    x: number;
+    y: number;
     color: HullColor;
     timesPainted: number;
 }
@@ -103,17 +113,15 @@ export class HullPaintingRobot {
 
     public GetHullSquare(x: number, y: number): HullSquare {
         // Get the hullsquare at (x,y) or create a new one and return it.
-        const square = this.paintedSquares.filter((square: HullSquare): boolean => HullPaintingRobot.IsSameSquare({ x: x, y: y }, square));
-        if (square.length > 0) { 
-            return square[0]; 
-        }
+        const newSquare = HullPaintingRobot.CreateHullSquare(x, y);
+        const square = this.paintedSquares.filter((square: HullSquare): boolean => HullPaintingRobot.IsSameSquare(newSquare, square));
 
-        const newSquare: HullSquare = { x: x, y: y, color: HullColor.Black, timesPainted: 0 };
+        if (square.length > 0) { return square[0]; }
         this.paintedSquares.push(newSquare);
         return newSquare;
     }
 
-    private static IsSameSquare(first: TwoDPoint, second: TwoDPoint): boolean { return (first.x == second.x) && (first.y == second.y); }
+    private static IsSameSquare(first: HullSquare, second: HullSquare): boolean { return (first.x == second.x) && (first.y == second.y); }
 
     public static Day11Part1(): string {
         const options: Partial<IntcodeMachineOptions> = {};
@@ -172,4 +180,6 @@ export class HullPaintingRobot {
 
         return "BFEAGHAF";
     }
+
+    public static CreateHullSquare(x: number, y: number): HullSquare { return { x: x, y: y, color: HullColor.Black, timesPainted: 0 }; }
 }

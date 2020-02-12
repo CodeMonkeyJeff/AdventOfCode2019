@@ -1,8 +1,6 @@
 "use strict";
 
 import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
-import { TwoDPoint } from "./Types";
-
 import readline = require("readline-sync");
 
 enum MovementCommand {
@@ -20,7 +18,9 @@ enum MapData {
     Initial = 99
 }
 
-type Position = { [P in keyof TwoDPoint]: TwoDPoint[P]; } & {
+type Position = {
+    x: number;
+    y: number;
     data: MapData;
     neighbors: Position[];
 };
@@ -352,10 +352,7 @@ export class OxygenSystem {
 
     public static Day15Part1(): string {
         const system = new OxygenSystem();
-        // system.RunInteractiveMode();
-        system.BuildMap()
-            .BuildDistances();
-
+        system.BuildMap().BuildDistances();
         return system.getDistance(system.OxygenStationPosition).toString();
     }
 
