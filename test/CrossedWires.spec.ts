@@ -3,7 +3,7 @@
 import assert = require("assert");
 import { CrossedWires } from "../src/CrossedWires";
 
-describe("Day 3 -- CrossedWires", function(): void {
+describe("Day 03 -- CrossedWires", function(): void {
     describe("GetClosestIntersectionDistance", function(): void {
         const tests = [
             { wirePath1: ["R8", "U5", "L5", "D3"], wirePath2: ["U7", "R6", "D4", "L4"], result: 6 },

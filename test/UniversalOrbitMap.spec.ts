@@ -3,7 +3,7 @@
 import assert = require("assert");
 import { UniversalOrbitMap } from "../src/UniversalOrbitMap";
 
-describe("Day 6 -- UniversalOrbitMap", function(): void {
+describe("Day 06 -- UniversalOrbitMap", function(): void {
     describe("addOrbit", function(): void {
         const tests = [
             { orbit: "COM)B", result: { "B": "COM"} },

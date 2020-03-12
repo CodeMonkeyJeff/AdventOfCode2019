@@ -3,7 +3,7 @@
 import assert = require("assert");
 import { SecureContainer } from "../src/SecureContainer";
 
-describe("Day 4 -- SecureContainer", function(): void {
+describe("Day 04 -- SecureContainer", function(): void {
     describe("CheckPasswordPart1", function(): void {
         const tests = [
             { password: 111111, result: true },

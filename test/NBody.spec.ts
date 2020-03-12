@@ -1,10 +1,9 @@
 "use strict";
 
-import { ThreeDPoint, Moon } from "../src/Types";
-import { NBody } from "../src/NBody";
+import { NBody, Point, Moon } from "../src/NBody";
 import assert = require("assert");
 
-const createThreeDPoint = (x: number, y: number, z: number): ThreeDPoint => { return { x: x, y: y, z: z } };
+const createPoint = (x: number, y: number, z: number): Point => { return { x: x, y: y, z: z } };
 
 // Used to test CreateMoon
 const sampleMoons: number[][] = [
@@ -15,23 +14,23 @@ const sampleMoons: number[][] = [
 ];
 
 // Used to test everything else
-const samples: ThreeDPoint[][] = new Array<ThreeDPoint[]>();
-samples.push(sampleMoons.map((moon: number[]): ThreeDPoint => createThreeDPoint(moon[0], moon[1], moon[2])));
+const samples: Point[][] = new Array<Point[]>();
+samples.push(sampleMoons.map((moon: number[]): Point => createPoint(moon[0], moon[1], moon[2])));
 samples.push([
     [-8, -10, 0],
     [5, 5, 10],
     [2, -7, 3],
     [9, -8, -3]
-].map((moon: number[]): ThreeDPoint => createThreeDPoint(moon[0], moon[1], moon[2])));
+].map((moon: number[]): Point => createPoint(moon[0], moon[1], moon[2])));
 
 
 describe("Day 12 -- NBody", function (): void {
     describe("CreateMoonState", function() {
         const tests = [
-            { moon: sampleMoons[0], result: { position: { x: -1, y: 0, z: 2 }, velocity: createThreeDPoint(0, 0, 0) } },
-            { moon: sampleMoons[1], result: { position: { x: 2, y: -10, z: -7 }, velocity: createThreeDPoint(0, 0, 0) } },
-            { moon: sampleMoons[2], result: { position: { x: 4, y: -8, z: 8 }, velocity: createThreeDPoint(0, 0, 0) } },
-            { moon: sampleMoons[3], result: { position: { x: 3, y: 5, z: -1 }, velocity: createThreeDPoint(0, 0, 0) } }
+            { moon: sampleMoons[0], result: { position: { x: -1, y: 0, z: 2 }, velocity: createPoint(0, 0, 0) } },
+            { moon: sampleMoons[1], result: { position: { x: 2, y: -10, z: -7 }, velocity: createPoint(0, 0, 0) } },
+            { moon: sampleMoons[2], result: { position: { x: 4, y: -8, z: 8 }, velocity: createPoint(0, 0, 0) } },
+            { moon: sampleMoons[3], result: { position: { x: 3, y: 5, z: -1 }, velocity: createPoint(0, 0, 0) } }
         ];
 
         tests.forEach((test): void => {

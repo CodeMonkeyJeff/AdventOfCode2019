@@ -3,7 +3,7 @@
 import assert = require("assert");
 import { SpaceImageFormat } from "../src/SpaceImageFormat";
 
-describe("Day 8 -- SpaceImageFormat", function() {
+describe("Day 08 -- SpaceImageFormat", function() {
     describe("Constructor", function() {
         const tests = [
             { data: "123456789012", result: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2] }

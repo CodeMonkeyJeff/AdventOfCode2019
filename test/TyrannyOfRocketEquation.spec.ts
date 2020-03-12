@@ -3,7 +3,7 @@
 import assert = require("assert");
 import { TyrannyOfRocketEquation } from "../src/TyrannyOfRocketEquation";
 
-describe("Day 1 -- TyrannyOfRocketEquation", function(): void {
+describe("Day 01 -- TyrannyOfRocketEquation", function(): void {
     describe("GetFuel", function (): void {
         const tests = [
             { mass: 12,     fuel: 2 },
