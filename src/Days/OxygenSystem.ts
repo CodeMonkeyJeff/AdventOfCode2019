@@ -1,7 +1,6 @@
 "use strict";
 
 import { IntcodeMachine, IntcodeMachineOptions } from "../Util/IntCodeMachine";
-// import readline = require("readline-sync");
 import readline = require("readline-sync");
 
 enum MovementCommand {
