@@ -1,6 +1,6 @@
 "use strict";
 
-import { IntcodeMachine } from "./IntCodeMachine";
+import { IntcodeMachine } from "../Util/IntCodeMachine";
 
 
 export class SensorBoost {

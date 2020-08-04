@@ -1,23 +1,23 @@
 "use strict";
-
-import { TyrannyOfRocketEquation } from "./TyrannyOfRocketEquation";
-import { ProgramAlarm1202 } from "./ProgramAlarm1202";
-import { CrossedWires } from "./CrossedWires";
 import { performance } from "perf_hooks";
-import { SecureContainer } from "./SecureContainer";
-import { ThermalEnvironmentSupervisionTerminal } from "./ThermalEnvironmentSupervisionTerminal";
-import { UniversalOrbitMap } from "./UniversalOrbitMap";
-import { AmplificationCircuit } from "./AmplificationCircuit";
-import { SpaceImageFormat } from "./SpaceImageFormat";
-import { SensorBoost } from "./SensorBoost";
-import { MonitoringStation } from "./MonitoringStation";
-import { HullPaintingRobot } from "./HullPaintingRobot";
-import { NBody } from "./NBody";
-import { ArcadeCabinet } from "./ArcadeCabinet";
-import { SpaceStoichiometry } from "./SpaceStoichiometry";
-import { OxygenSystem } from "./OxygenSystem";
-import { FlawedFrequencyTransmission } from "./FlawedFrequencyTransmission";
-import { SetAndForget } from "./SetAndForget";
+
+import { TyrannyOfRocketEquation } from "./Days/TyrannyOfRocketEquation";
+import { ProgramAlarm1202 } from "./Days/ProgramAlarm1202";
+import { CrossedWires } from "./Days/CrossedWires";
+import { SecureContainer } from "./Days/SecureContainer";
+import { ThermalEnvironmentSupervisionTerminal } from "./Days/ThermalEnvironmentSupervisionTerminal";
+import { UniversalOrbitMap } from "./Days/UniversalOrbitMap";
+import { AmplificationCircuit } from "./Days/AmplificationCircuit";
+import { SpaceImageFormat } from "./Days/SpaceImageFormat";
+import { SensorBoost } from "./Days/SensorBoost";
+import { MonitoringStation } from "./Days/MonitoringStation";
+import { HullPaintingRobot } from "./Days/HullPaintingRobot";
+import { NBody } from "./Days/NBody";
+import { ArcadeCabinet } from "./Days/ArcadeCabinet";
+import { SpaceStoichiometry } from "./Days/SpaceStoichiometry";
+import { OxygenSystem } from "./Days/OxygenSystem";
+import { FlawedFrequencyTransmission } from "./Days/FlawedFrequencyTransmission";
+import { SetAndForget } from "./Days/SetAndForget";
 
 const benchmarks = new Array<number>();
 const totalTime = (): string => "Total Time:  " + benchmarks.reduce((t,c) => t+c).toFixed(3).padStart(50) + " milliseconds";

@@ -21,7 +21,11 @@ function lint() {
 }
 
 function transpilation() {
-    const tsGlob = ["src/*.ts"];
+    const tsGlob = [
+        "src/*.ts",
+        "src/Util/*.ts",
+        "src/Days/*.ts"
+    ];
     const tsProject = ts.createProject("./tsconfig.json");
 
     // return gulp.src(tsGlob, { base: ".", sourcemaps: true })

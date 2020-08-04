@@ -1,6 +1,6 @@
 "use strict";
 
-import { IntcodeMachine, Opcode } from "./IntCodeMachine";
+import { IntcodeMachine, Opcode } from "../Util/IntCodeMachine";
 
 enum ArcadeCabinetTileId {
     Empty = 0,

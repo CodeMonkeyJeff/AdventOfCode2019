@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { IntcodeMachine } from "../src/IntCodeMachine";
+import { IntcodeMachine } from "../src/Util/IntCodeMachine";
 
 describe("Day 02 -- Intcode", function (): void {
     describe("ADD", function (): void {

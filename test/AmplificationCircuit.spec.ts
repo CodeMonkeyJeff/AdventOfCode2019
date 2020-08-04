@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { AmplificationCircuit } from "../src/AmplificationCircuit";
+import { AmplificationCircuit } from "../src/Days/AmplificationCircuit";
 
 describe("Day 07 -- AmplificationCircuit", function() {
     describe("CalculateThrust", function() {

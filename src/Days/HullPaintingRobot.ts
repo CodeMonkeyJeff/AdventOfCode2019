@@ -1,6 +1,6 @@
 "use strict";
 
-import { IntcodeMachine, IntcodeMachineOptions, Opcode } from "./IntCodeMachine";
+import { IntcodeMachine, IntcodeMachineOptions, Opcode } from "../Util/IntCodeMachine";
 
 enum HullColor {
     Black = 0,

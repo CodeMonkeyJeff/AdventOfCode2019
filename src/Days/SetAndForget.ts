@@ -1,6 +1,6 @@
 "use strict";
 
-import { IntcodeMachine, IntcodeMachineOptions } from "./IntCodeMachine";
+import { IntcodeMachine, IntcodeMachineOptions } from "../Util/IntCodeMachine";
 
 type Scaffold = {
     x: number;
