@@ -1,6 +1,6 @@
 "use test";
 
-import { SpaceStoichiometry } from "../src/SpaceStoichiometry";
+import { SpaceStoichiometry } from "../src/Days/SpaceStoichiometry";
 import assert = require("assert");
 
 const data: string[][] = new Array<string[]>();

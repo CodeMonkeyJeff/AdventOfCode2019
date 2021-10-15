@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { MonitoringStation } from "../src/MonitoringStation";
+import { MonitoringStation } from "../src/Days/MonitoringStation";
 
 // const maps: Array<string[]> = new Array<string[]>();
 const maps: { [name: string]: string[] } = {}

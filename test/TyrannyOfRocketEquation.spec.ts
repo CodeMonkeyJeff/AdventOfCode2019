@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { TyrannyOfRocketEquation } from "../src/TyrannyOfRocketEquation";
+import { TyrannyOfRocketEquation } from "../src/Days/TyrannyOfRocketEquation";
 
 describe("Day 01 -- TyrannyOfRocketEquation", function(): void {
     describe("GetFuel", function (): void {

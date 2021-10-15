@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { FlawedFrequencyTransmission } from "../src/FlawedFrequencyTransmission";
+import { FlawedFrequencyTransmission } from "../src/Days/FlawedFrequencyTransmission";
 
 describe("Day 16 -- FlawedFrequencyTransmission", function(): void {
     describe("ConvertInputSignal", function (): void {

@@ -1,67 +1,52 @@
 "use strict";
 
-export type GraphOptions = {
-    IsUndirectedGraph: boolean;
+export class Edge {
+    public Start: Vertex;
+    public End: Vertex;
+    public Weight: number;
+
+    constructor(start: Vertex, end: Vertex, weight = 1) {
+        this.Start = start;
+        this.End = end;
+        this.Weight = weight;
+    }
 }
 
-type Neighbor = {
-    NeighborKey: string;
-    Weight: number;
+export interface Vertex {
+    name: string;
+    edges: Edge[];
 }
 
-export interface HasKey {
-    key: string;
-}
+export class Graph {
+    public vertices: Vertex[];
+    
+    constructor() { this.vertices = new Array<Vertex>(); }
+    
+    public GetVertex(name: string): Vertex { return this.vertices.find(v => v.name == name); }
 
-export class Graph<T extends HasKey> {
-    public Vertices: T[];
-    public AdjacencyList: { [name: string]: Neighbor[] };
-
-    private readonly _options: GraphOptions;
-
-    public constructor(options: Partial<GraphOptions> = {}) {
-        this.AdjacencyList = {};     // A vertex maps to its adjacency list
-        this._options = Object.assign({
-            IsUndirectedGraph: true,
-        }, options);
+    //* Function signature is "Vertex" because we can't instantiate a concrete "Vertex" here.
+    public AddVertex(vertex: Vertex): Vertex {
+        if (this.GetVertex(vertex.name) === undefined) { this.vertices.push(vertex); }
+        return vertex;
     }
 
-    public GetNeighbors = (start: string): Neighbor[] => this.AdjacencyList[start];
+    public HasVertex(name: string): boolean { return this.GetVertex(name) === undefined; }
 
-    public AddVertex(vertex: T): void {
-        if (!this.HasVertex(vertex)) { 
-            this.Vertices.push(vertex);
-            this.AdjacencyList[vertex.key] = new Array<Neighbor>();
-        }        
+    public GetEdge(start: string, end: string): Edge { 
+        const a = this.GetVertex(start);
+        if (a === undefined) { return null; }
+
+        const b = this.GetVertex(end);
+        if (b === undefined) { return null; }
+
+        return a.edges.find(e => e.End.name == b.name);
     }
+    public AddEdge(start: Vertex, end: Vertex, weight = 1): Edge {
+        if (this.HasVertex(start.name)) { throw new Error("Tried to add an edge starting at a nonexistant vertex"); }
+        if (this.HasVertex(end.name)) { throw new Error("Tried to add an edge ending at a nonexistant vertex"); }
 
-    public AddEdge(start: T, end: T, weight = 1): void {
-        this.AddVertex(start);
-        this.AddVertex(end);
-
-        if (! this.HasNeighbor(start, end)) {
-            this.AdjacencyList[start.key].push({NeighborKey: end.key, Weight: weight})
-        }        
-        
-        if (this._options.IsUndirectedGraph) {
-            if (! this.HasNeighbor(end, start)) {
-                this.AdjacencyList[end.key].push({NeighborKey: start.key, Weight: weight})
-            }
-        }
+        const edge = new Edge(start, end, weight);
+        start.edges.push(edge);
+        return edge;
     }
-
-    public RemoveEdge(start: T, end: T): void {
-        this.AdjacencyList[start.key] = this.AdjacencyList[start.key].filter(n => n.NeighborKey != end.key);
-    }
-
-    public RemoveVertex(name: T): void {
-        this.Vertices.forEach(element => { this.RemoveEdge(element, name); });
-        delete this.AdjacencyList[name.key];        
-        this.Vertices = this.Vertices.filter(v => v.key != name.key);
-    }
-
-    public HasVertex  = (name: T): boolean => !(typeof this.AdjacencyList[name.key] === "undefined");
-    private HasNeighbor = (vertex: T, neighbor: T): boolean => this.AdjacencyList[vertex.key].filter(e => e.NeighborKey == neighbor.key).length > 0;
-
-    private GetNeighbor = (start: T, end: T): Neighbor => this.AdjacencyList[start.key].reduce((foundNeighbor: Neighbor, current: Neighbor): Neighbor => current.NeighborKey == end.key ? current : foundNeighbor, null);    
 }

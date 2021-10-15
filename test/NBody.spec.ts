@@ -1,6 +1,6 @@
 "use strict";
 
-import { NBody, Point, Moon } from "../src/NBody";
+import { NBody, Point, Moon } from "../src/Days/NBody";
 import assert = require("assert");
 
 const createPoint = (x: number, y: number, z: number): Point => { return { x: x, y: y, z: z } };

@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { UniversalOrbitMap } from "../src/UniversalOrbitMap";
+import { UniversalOrbitMap } from "../src/Days/UniversalOrbitMap";
 
 describe("Day 06 -- UniversalOrbitMap", function(): void {
     describe("addOrbit", function(): void {

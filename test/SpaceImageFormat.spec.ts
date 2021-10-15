@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { SpaceImageFormat } from "../src/SpaceImageFormat";
+import { SpaceImageFormat } from "../src/Days/SpaceImageFormat";
 
 describe("Day 08 -- SpaceImageFormat", function() {
     describe("Constructor", function() {

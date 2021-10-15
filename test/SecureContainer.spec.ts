@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { SecureContainer } from "../src/SecureContainer";
+import { SecureContainer } from "../src/Days/SecureContainer";
 
 describe("Day 04 -- SecureContainer", function(): void {
     describe("CheckPasswordPart1", function(): void {

@@ -1,7 +1,7 @@
 "use strict";
 
 import assert = require("assert");
-import { CrossedWires } from "../src/CrossedWires";
+import { CrossedWires } from "../src/Days/CrossedWires";
 
 describe("Day 03 -- CrossedWires", function(): void {
     describe("GetClosestIntersectionDistance", function(): void {
